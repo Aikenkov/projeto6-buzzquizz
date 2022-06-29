@@ -61,7 +61,7 @@ body {
     margin: 0px auto;
 }
 
-.all-quizzes{
+.all-quizzes {
     width: 1051px;
     display: flex;
     flex-wrap: wrap;
@@ -103,24 +103,25 @@ h1 {
     margin-bottom: 10px;
 }
 
-.title{
+.title {
     height: 40px;
     margin-top: 50px;
     display: flex;
     align-items: center;
 }
-.title span{
+
+.title span {
     margin-right: 20px;
 }
 
-ion-icon{
+ion-icon {
     color: #EC362D;
     font-size: 31px;
     cursor: pointer;
 }
-  
 
-.levels-box{
+
+.levels-box {
     width: 450px;
     height: 340px;
     background-color: #ffffff;
@@ -129,14 +130,16 @@ ion-icon{
     margin-bottom: 20px;
     transition: all linear 200ms;
 }
-h2{
+
+h2 {
     font-size: 23px;
     font-weight: bold;
     color: #000000;
     margin-bottom: 20px;
     text-align: center;
 }
-h3{
+
+h3 {
     margin-top: 10px;
     margin-bottom: 5px;
     margin-left: 25px;
@@ -147,14 +150,14 @@ h3{
     justify-content: space-between;
 }
 
-h3 ion-icon{
+h3 ion-icon {
     color: black;
     width: 25px;
     height: 20px;
     padding-right: 10px;
 }
 
-textarea{
+textarea {
     width: 400px;
     height: 50px;
     outline: none;
@@ -171,12 +174,12 @@ textarea{
     line-height: 20px;
 }
 
-.fechada{
+.fechada {
     height: 40px;
     overflow-y: hidden;
 }
 
-.hidden{
+.hidden {
     display: none;
 }
 
@@ -188,15 +191,15 @@ textarea{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  }
-  
-  .form > h1 {
+}
+
+.form>h1 {
     margin-bottom: 27px;
     font-weight: 700;
     font-size: 23px;
-  }
-  
-  .input-area {
+}
+
+.input-area {
     margin-top: 27px;
     display: flex;
     flex-direction: column;
@@ -206,24 +209,24 @@ textarea{
     height: 256px;
     background: #ffffff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
-  }
-  
-  input {
+}
+
+input {
     margin: 9px;
     width: 564px;
     height: 46px;
     background: #ffffff;
     border: 1px solid #d1d1d1;
     border-radius: 5px;
-  }
-  
-  .placeholder {
+}
+
+.placeholder {
     font-family: 'Roboto';
     font-style: italic;
     font-weight: 400;
     font-size: 19px;
     line-height: 22px;
-  
+
     color: #bababa;
   }
   
@@ -262,6 +265,7 @@ textarea{
         width: 80%;
         
     }
+
     .my-quizzes {
         width: 90%;
     }
@@ -286,3 +290,172 @@ textarea{
 }
 
 /*Fim Mateus*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Inicio Fabio */
+
+.header-quizz {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 227px;
+    width: 100vw;
+    margin-bottom: 42px;
+    position: absolute;
+    left: 0;
+    top: 69px;
+
+}
+
+.content> :nth-child(2) {
+    margin-top: 267px;
+}
+
+.header-quizz span {
+    font-size: 39px;
+    color: #FFFFFF;
+    z-index: 2;
+}
+
+.header-quizz div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .6);
+    top: 0;
+    left: 0;
+}
+
+.header-quizz img {
+    object-fit: cover;
+    object-position: center;
+    height: 227px;
+    width: 100vw;
+}
+
+
+.question {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+    width: 759px;
+    height: 676px;
+    padding: 28px 35px 35px 35px;
+    margin-top: 40px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+}
+
+.question-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    height: 138px;
+    width: 688px;
+    background-color: #434CA0;
+    color: #fff;
+    font-size: 23px;
+    font-weight: 700;
+}
+
+.answers {
+    display: flex;
+    flex-wrap: wrap;
+    width: 688px;
+    justify-content: space-between;
+    position: relative;
+}
+
+.answers h3 {
+    margin-top: 12px;
+    margin-bottom: 28px;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.answers img {
+    height: 175px;
+    width: 330px;
+}
+
+.overlay {
+    background-color: rgba(255, 255, 255, 0.622);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+}
+
+.true.color {
+    color: #009C22;
+}
+
+.false.color {
+    color: #FF4B4B;
+}
+
+.chosen {
+    z-index: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+.result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    padding: 18px;
+    box-sizing: border-box;
+    background-color: antiquewhite;
+    width: 759px;
+}
+
+.result> :nth-child(2) {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+}
+
+.result p {
+    font-weight: 700;
+    font-size: 19px;
+    color: #484848;
+    padding: 0 15px;
+}
+
+.result-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 99px;
+    width: 727px;
+    background-color: #EC362D;
+    color: #fff;
+    font-size: 23px;
+    font-weight: 700;
+}
+
+/* Fim Fabio */
