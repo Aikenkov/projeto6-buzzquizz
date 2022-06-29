@@ -49,6 +49,11 @@ body{
     flex-wrap: wrap;
 }
 
+.all-quizzes{
+    width: 1051px;
+    display: flex;
+    flex-wrap: wrap;
+}
 .quizz {
     width: 340px;
     height: 180px;
