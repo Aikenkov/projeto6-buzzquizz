@@ -123,7 +123,8 @@ ion-icon{
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
-
+    margin-bottom: 20px;
+    transition: all linear 200ms;
 }
 h2{
     font-size: 23px;
@@ -140,6 +141,15 @@ h3{
     font-size: 20px;
     font-weight: bold;
     color: #000000;
+    display: flex;
+    justify-content: space-between;
+}
+
+h3 ion-icon{
+    color: black;
+    width: 25px;
+    height: 20px;
+    padding-right: 10px;
 }
 
 textarea{
@@ -157,6 +167,15 @@ textarea{
     padding-left: 10px;
     padding-top: 15px;
     line-height: 20px;
+}
+
+.fechada{
+    height: 40px;
+    overflow-y: hidden;
+}
+
+.hidden{
+    display: none;
 }
 
 /**/
@@ -207,7 +226,7 @@ textarea{
   }
   
   .redButton1 {
-    margin-top: 85px;
+    margin-top: 45px;
     display: flex;
     justify-content: center;
     align-items: center;
