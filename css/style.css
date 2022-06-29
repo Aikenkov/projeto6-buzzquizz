@@ -11,7 +11,7 @@ body {
 
 .top {
     width: 100%;
-    height: 69px;
+    height: 70px;
     background-color: #EC362D;
     color: white;
     font-size: 37px;
@@ -19,6 +19,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
 }
 
 .my-quizzes-null {
@@ -40,8 +44,10 @@ body {
     height: 40px;
     border: 1px dashed #EC362D;
     color: #EC362D;
+    background-color: #fafafa;
     border-radius: 50px;
     margin-top: 20px;
+    cursor: pointer;
 }
 
 .my-quizzes {
@@ -49,13 +55,16 @@ body {
     width: 1051px;
     display: flex;
     flex-wrap: wrap;
+    margin: 0px auto;
 }
 
 .all-quizzes{
     width: 1051px;
     display: flex;
     flex-wrap: wrap;
+    margin: 0px auto;
 }
+
 .quizz {
     width: 340px;
     height: 180px;
@@ -64,6 +73,7 @@ body {
     border-radius: 10px;
     margin-right: 10px;
     margin-bottom: 10px;
+    cursor: pointer;
 }
 
 .quizz img {
@@ -77,7 +87,6 @@ body {
     position: absolute;
     left: 20px;
     bottom: 20px;
-    ;
     color: white;
     text-align: left;
     line-break: auto;
@@ -91,12 +100,6 @@ h1 {
     margin-bottom: 10px;
 }
 
-/*Fim Mateus*/
-
-
-
-
-/* inicio Fabio */
 .title{
     height: 40px;
     margin-top: 50px;
@@ -110,9 +113,171 @@ h1 {
 ion-icon{
     color: #EC362D;
     font-size: 31px;
-    
+    cursor: pointer;
+}
+  
+
+.levels-box{
+    width: 450px;
+    height: 340px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+
+}
+h2{
+    font-size: 23px;
+    font-weight: bold;
+    color: #000000;
+    margin-top: 90px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+h3{
+    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-left: 25px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
 }
 
+textarea{
+    width: 400px;
+    height: 50px;
+    outline: none;
+    resize: none;
+    overflow-y: auto;
+    color: #BABABA;
+    font-style: italic;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #D1D1D1;
+    margin: 15px auto;
+    padding-left: 10px;
+    padding-top: 15px;
+    line-height: 20px;
+}
+
+/**/
+
+.form {
+    margin-top: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .form > h1 {
+    margin-bottom: 27px;
+    font-weight: 700;
+    font-size: 23px;
+  }
+  
+  .input-area {
+    margin-top: 27px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    height: 256px;
+    background: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  input {
+    margin: 9px;
+    width: 564px;
+    height: 46px;
+    background: #ffffff;
+    border: 1px solid #d1d1d1;
+    border-radius: 5px;
+  }
+  
+  .placeholder {
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 22px;
+  
+    color: #bababa;
+  }
+  
+  .redButton1 {
+    margin-top: 85px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 368.86px;
+    height: 54px;
+    color: #ffffff;
+    background: #ec362d;
+    border-radius: 15px;
+  }
 
 
-/* fim Fabio */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 1100px){
+    body{
+        justify-content: center;
+    }
+    .content{
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .my-quizzes-null{
+        width: 90%;
+    }
+    .my-quizzes {
+        width: 90%;
+    }
+    .all-quizzes{
+        justify-content: center;
+        width: 90%;
+    }
+}
+
+/*Fim Mateus*/
