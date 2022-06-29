@@ -7,13 +7,11 @@ let content = document.querySelector(".content");
 
 //setInterval(findQuizzes, 5000);
 
-
 //parte para Renderizar tela inicial e ir para o quizz clicado
 
 function renderQuizzesTela1(array){
     content.innerHTML = "";
     quizzes = array.data; 
-    console.log(quizzes);
     if(selfIds.length === 0){ 
         content.innerHTML += `
         <div class="my-quizzes-null">
@@ -83,10 +81,20 @@ function renderQuizzesTela1(array){
     }
 }
 
+
 function findQuizzes(){
    const promise = axios.get(url);
    promise.then(renderQuizzesTela1);
+   promise.catch(tratarErro);
 }
+
+function tratarErro(erro){
+    if(erro.response.status === 404){
+        alert("para de trolar");
+        findQuizzes;
+    }
+}
+
 
 function goToQuizz(){
     content.innerHTML= "TAMO FAZENDO"
@@ -119,23 +127,103 @@ function createQuizz(){
 }
 
 function createQuizzValidation() {
-    let string = document.querySelector('input:nth-child(2)').value
+    let title = document.querySelector('input:nth-child(1)').value
+    let img = document.querySelector('input:nth-child(2)').value
+    let Questions = document.querySelector('input:nth-child(3)').value
+    let Levels = document.querySelector('input:nth-child(4)').value
     if (
-      document.querySelector('input:nth-child(1)').value.length < 20 ||
-      document.querySelector('input:nth-child(1)').value.length > 65 ||
-      !checkUrl(string) ||
-      document.querySelector('input:nth-child(3)').value < 3 ||
-      document.querySelector('input:nth-child(4)').value < 2
+      title.length < 20 ||
+      title.length > 65 ||
+      !checkUrl(img) ||
+      Questions < 3 ||
+      Levels < 2
     ) {
       alert('preencher os dados corretamente.')
-    }else{
-        createQuestions();
+    } else {
+      createQuestions(title, img, Questions, Levels)
     }
 }
 
-function createQuestions(){
+function createObject(title, img, Questions, Levels) {
+let object = {
+    title: title, 
+    image: img,
+    questions: [
+        {
+            title: "",
+            color: "",
+            answers: [
+                {
+                    text: "",
+                    image: "",
+                    isCorrectAnswer: Boolean    
+                }
+            ]
+        }
+    ],
+    levels: [
+        {
+            title: "",
+            image: "",
+            text: "",
+            minValue: Number
+        }
+    ]
+}   
+let incorrectAnswer = [];
+for(let i = 1; i <= Questions; i++){
+    incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i}`)
+    incorrectAnswer = incorrectAnswer.filter(function (i) {
+        return i;
+      });
+    object.questions[i].title = document.querySelector(`.questions${i}`)
+    object.questions[i].color = document.querySelector(`.question-color${i}`)
+    for(let j = 1; j < incorrectAnswer.length; j++){
+        object.questions[i].answers[j].text = incorrectAnswer[j];
+    }
+
+
+
+    
+}
 
 }
+
+function createQuestions(title, img, Questions, Levels) {
+    content.innerHTML = "";
+    content.innerHTML += '<h2>Crie suas perguntas</h2>';
+    for (let i = 0; i < Questions; i++) {
+        content.innerHTML += 
+        `
+            <div class="question-box fechada" >
+                <h3>Pergunta ${i+1}<ion-icon name="create-outline" onclick="openLevels(this)"></ion-icon></h3>
+                <textarea name="question" class="question${i+1}" placeholder="Texto da pergunta"></textarea>
+                <textarea name="question-color" class="question-color${i+1}" placeholder="Cor de fundo da pergunta"></textarea>
+  
+                <h3>Resposta correta</h3>
+                <textarea name="correct-answer" class="correct-answer${i+1}" placeholder="Resposta correta"></textarea>
+                <textarea name="answer-img" class="answer-img" placeholder="URL da imagem"></textarea>
+  
+                <h3>Respostas incorretas</h3>
+                <textarea name="incorrect-answer" class="incorrect-answer${i+1}" placeholder="Resposta incorreta 1"></textarea>
+                <textarea name="answer-img" class="answer-img" placeholder="URL da imagem 1"></textarea>
+  
+                <textarea name="incorrect-answer" class="incorrect-answer${i+1}" placeholder="Resposta incorreta 2"></textarea>
+                <textarea name="answer-img" class="answer-img" placeholder="URL da imagem 2"></textarea>
+  
+                <textarea name="incorrect-answer}" class="incorrect-answer${i+1}" placeholder="Resposta incorreta 3"></textarea>
+                <textarea name="answer-img" class="answer-img" placeholder="URL da imagem 3"></textarea>
+            </div>
+        `
+    };
+
+    content.innerHTML +=  `
+              <div class="redButton1" onclick="verifyFinishQuiz()">
+                  <p>Prosseguir pra criar níveis</p>
+              </div>
+                `
+    //createObject(title, img, Questions, Levels);
+  }   
 
 //Parte para verificar os niveis do quizz
 
@@ -147,9 +235,9 @@ function openLevels(elemento){
 function createQuizzLevels(qnt){
     content.innerHTML= "";
     content.innerHTML+= `<h2>Agora, Decida os níveis</h2>`
-    for(let i = 0; i < qnt; i++){
+    for(let i = 1; i <= qnt; i++){
         content.innerHTML+=`
-        <div class="levels-box fechada" >
+        <div class="levels-box fechada">
             <h3>Nível ${i} <ion-icon name="create-outline" onclick="openLevels(this)"></ion-icon></h3>
             <textarea name="titulo" class="titulo" placeholder="Título do nível"></textarea>
             <textarea name="acerto" class="acerto" placeholder="% de acerto mínima"></textarea>
