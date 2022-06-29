@@ -364,9 +364,9 @@ function ramdomize() {
 }
 
 
-getQuizz();
+/* getQuizz();  chamar essa função para carregar o quizz   */
 function getQuizz() {
-    const promise = axios.get(`${url}/1`);
+    const promise = axios.get(`${url}/1`); /* <----- esse 1 tem que ser o id do quizz */
     promise.then(showQuizz);
 }
 
