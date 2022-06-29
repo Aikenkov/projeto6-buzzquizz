@@ -111,17 +111,35 @@ function createQuizz(){
 
                 <input type="text" placeholder="Quantidade de níveis do quizz" />
             </div>
-            <div class="redButton1" onclick="">
+            <div class="redButton1" onclick="createQuizzValidation()">
                 <p>Prosseguir pra criar perguntas</p>
             </div>
         </div>          
     ` 
+}
+
+function createQuizzValidation() {
+    let string = document.querySelector('input:nth-child(2)').value
+    if (
+      document.querySelector('input:nth-child(1)').value.length < 20 ||
+      document.querySelector('input:nth-child(1)').value.length > 65 ||
+      !checkUrl(string) ||
+      document.querySelector('input:nth-child(3)').value < 3 ||
+      document.querySelector('input:nth-child(4)').value < 2
+    ) {
+      alert('preencher os dados corretamente.')
+    }else{
+        createQuestions();
+    }
+}
+
+function createQuestions(){
 
 }
 
 //Parte para verificar os niveis do quizz
 
-function abrirLevels(elemento){
+function openLevels(elemento){
     elemento.parentNode.parentNode.classList.toggle("fechada")
     elemento.classList.add("hidden");
 }
@@ -132,7 +150,7 @@ function createQuizzLevels(qnt){
     for(let i = 0; i < qnt; i++){
         content.innerHTML+=`
         <div class="levels-box fechada" >
-            <h3>Nível ${i} <ion-icon name="create-outline" onclick="abrirLevels(this)"></ion-icon></h3>
+            <h3>Nível ${i} <ion-icon name="create-outline" onclick="openLevels(this)"></ion-icon></h3>
             <textarea name="titulo" class="titulo" placeholder="Título do nível"></textarea>
             <textarea name="acerto" class="acerto" placeholder="% de acerto mínima"></textarea>
             <textarea name="URL" type="url" class="url" placeholder="URL da imagem do nível"></textarea>
@@ -162,6 +180,10 @@ function verifyFinishQuizz(qnt){
     let descricoes = document.querySelectorAll("textarea.descricao").value;
     let flag = 0;
     for(let i = 0; i < qnt; i++){
+        if(!(checkUrl(urls[i]))){
+            alert("Preencha os dados corretamente!!!")
+            createQuizzLevels(qnt);
+        }
         if(acertos[i] !== 0){
             flag++
             if(flag === qnt-1){
@@ -181,13 +203,19 @@ function verifyFinishQuizz(qnt){
     finishQuizz(arrayLevels);
 }
 
+function checkUrl(string, qnt) {
+    try {
+        let url = new URL(string)
+        return true;
+    }catch(err) {
+        return false;
+   }
+ }
+
 //Finalizada parte para verificar niveis do quizz
 
 
-
-
-
-//findQuizzes();
+findQuizzes();
 
 //Fim mateus
 
