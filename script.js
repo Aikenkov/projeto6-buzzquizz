@@ -8,6 +8,7 @@ function renderQuizzes(array){
     quizzes = array.data;
     let content = document.querySelector(".content")
     content = "";
+
     if(selfIds.length===0){
         content.innerHTML+=`
         <div class="my-quizzes-null">
@@ -33,6 +34,7 @@ function renderQuizzes(array){
             `
         }
     }else{
+        content.innerHTML+= `<h1>Seus Quizzes<ion-icon name="add-circle"></ion-icon></h1>`
         for(let i = 0; i < quizzes.length; i++){
             for(let j = 0; j < selfIds.length; j++){
                 if(quizzes[i].id === selfIds[j]){

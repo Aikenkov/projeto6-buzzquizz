@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500&display=swap');
+
 /*Inicio Mateus*/
-body{
+body {
     font-family: 'Roboto', sans-serif;
     background-color: #fafafa;
     display: flex;
@@ -34,7 +35,7 @@ body{
     border: 1px dashed #D4D4D4;
 }
 
-.my-quizzes-null button{
+.my-quizzes-null button {
     width: 150px;
     height: 40px;
     border: 1px dashed #EC362D;
@@ -43,7 +44,8 @@ body{
     margin-top: 20px;
 }
 
-.my-quizzes{
+.my-quizzes {
+    margin: 0px auto;
     width: 1051px;
     display: flex;
     flex-wrap: wrap;
@@ -57,31 +59,60 @@ body{
 .quizz {
     width: 340px;
     height: 180px;
-    background-image: linear-gradient( transparent 2%, black 100%);
+    background-image: linear-gradient(transparent 2%, black 100%);
     position: relative;
     border-radius: 10px;
     margin-right: 10px;
     margin-bottom: 10px;
 }
+
 .quizz img {
     width: 340px;
     height: 180px;
     -webkit-mask-image: linear-gradient(to top, transparent 2%, black 100%);
     border-radius: 10px;
 }
+
 .quizz span {
     position: absolute;
     left: 20px;
-    bottom: 20px;;
+    bottom: 20px;
+    ;
     color: white;
     text-align: left;
-    line-break:auto;
+    line-break: auto;
     font-size: 19px;
 }
+
 h1 {
     font-size: 20px;
     font-weight: bold;
     color: #000000;
     margin-bottom: 10px;
 }
+
 /*Fim Mateus*/
+
+
+
+
+/* inicio Fabio */
+.title{
+    height: 40px;
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+}
+.title span{
+    margin-right: 20px;
+}
+
+ion-icon{
+    color: #EC362D;
+    font-size: 31px;
+    
+}
+
+
+
+/* fim Fabio */
