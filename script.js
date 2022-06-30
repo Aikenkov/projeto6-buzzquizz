@@ -32,7 +32,7 @@ function renderQuizzesTela1(array){
         let allQuizzes = document.querySelector(".all-quizzes");                
         for(let i = 0; i < quizzes.length; i++){
             allQuizzes.innerHTML+= `
-            <div class="quizz" onclick="goToQuizz()">  
+            <div class="quizz" id="${quizzes[i].id}" onclick="goToQuizz(this)">  
                 <img src="${quizzes[i].image}">
                 <span>${quizzes[i].title}</span>
             </div>         
@@ -61,7 +61,7 @@ function renderQuizzesTela1(array){
             for(let j = 0; j < selfIds.length; j++){
                 if(quizzes[i].id === selfIds[j]){
                     myQuizzes.innerHTML+=`
-                        <div class="quizz" onclick="goToQuizz()">  
+                        <div class="quizz" id="${quizzes[j].id} onclick="goToQuizz(this)">  
                             <img src="${quizzes[j].image}">
                             <span>${quizzes[j].title}</span>
                         </div>         
@@ -71,7 +71,7 @@ function renderQuizzesTela1(array){
             }
             if(flag === 0){
                 allQuizzes.innerHTML+= `
-                    <div class="quizz" onclick="goToQuizz()">  
+                    <div class="quizz" id="${quizzes[i].id} onclick="goToQuizz(this)">  
                         <img src="${quizzes[i].image}">
                         <span>${quizzes[i].title}</span>
                     </div>         
@@ -90,8 +90,7 @@ function findQuizzes(){
 
 function tratarErro(erro){
     if(erro.response.status === 404){
-        alert("para de trolar");
-        findQuizzes;
+        findQuizzes();
     }
 }
 
@@ -302,8 +301,8 @@ findQuizzes();
 
 //Fim mateus
 
-function goToQuizz(){
-    getQuizz();
+function goToQuizz(element){
+    getQuizz(element);
 }
 
 /* Inicio Fabio */
@@ -316,18 +315,21 @@ function ramdomize() {
     return Math.random() - 0.5;
 }
 
-
-getQuizz();
 /* getQuizz();  chamar essa função para carregar o quizz   */
-function getQuizz() {
-    const promise = axios.get(`${url}/1`);
-    const promise = axios.get(`${url}/1`); /* <----- esse 1 tem que ser o id do quizz */
-    promise.then(showQuizz);
+function getQuizz(element) {
+    for(let i = 0; i < quizzes.length; i++){
+        if(quizzes[i].id === element.id){
+            showQuizz(quizzes[i]);
+        }
+    }
 }
 
 function showQuizz(array) {
-    quizz = array.data
+    quizz = array
     questions = quizz.questions
+    console.log(array)
+    console.log(quizz)
+    console.log(questions)
     let content = document.querySelector(".content");
     content.innerHTML = ` 
               <header class="header-quizz">
