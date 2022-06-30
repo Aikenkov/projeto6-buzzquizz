@@ -95,11 +95,6 @@ function tratarErro(erro){
     }
 }
 
-
-function goToQuizz(){
-    content.innerHTML= "TAMO FAZENDO"
-}
-
 //Fim da parte para Renderizar tela inicial e ir para o quizz clicado
 
 //Começo da parte para criar Quizz
@@ -129,18 +124,18 @@ function createQuizz(){
 function createQuizzValidation() {
     let title = document.querySelector('input:nth-child(1)').value
     let img = document.querySelector('input:nth-child(2)').value
-    let Questions = document.querySelector('input:nth-child(3)').value
+    let Questions1 = document.querySelector('input:nth-child(3)').value
     let Levels = document.querySelector('input:nth-child(4)').value
     if (
       title.length < 20 ||
       title.length > 65 ||
       !checkUrl(img) ||
-      Questions < 3 ||
+      Questions1 < 3 ||
       Levels < 2
     ) {
       alert('preencher os dados corretamente.')
     } else {
-      createQuestions(title, img, Questions, Levels)
+      createQuestions(title, img, Questions1, Levels)
     }
 }
 
@@ -171,7 +166,7 @@ let object = {
     ]
 }   
 let incorrectAnswer = [];
-for(let i = 1; i <= Questions; i++){
+for(let i = 1; i <= Questions1; i++){
     incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i}`)
     incorrectAnswer = incorrectAnswer.filter(function (i) {
         return i;
@@ -189,10 +184,10 @@ for(let i = 1; i <= Questions; i++){
 
 }
 
-function createQuestions(title, img, Questions, Levels) {
+function createQuestions(title, img, Questions1, Levels) {
     content.innerHTML = "";
     content.innerHTML += '<h2>Crie suas perguntas</h2>';
-    for (let i = 0; i < Questions; i++) {
+    for (let i = 0; i < Questions1; i++) {
         content.innerHTML += 
         `
             <div class="question-box fechada" >
@@ -222,7 +217,7 @@ function createQuestions(title, img, Questions, Levels) {
                   <p>Prosseguir pra criar níveis</p>
               </div>
                 `
-    //createObject(title, img, Questions, Levels);
+    //createObject(title, img, Questions1, Levels);
   }   
 
 //Parte para verificar os niveis do quizz
@@ -307,9 +302,108 @@ findQuizzes();
 
 //Fim mateus
 
+function goToQuizz(){
+    getQuizz();
+}
+
+/* Inicio Fabio */
+let answer;
+let points = 0;
+let plays = 0;
+let questions;
+let quizz;
+function ramdomize() {
+    return Math.random() - 0.5;
+}
 
 
+getQuizz();
+/* getQuizz();  chamar essa função para carregar o quizz   */
+function getQuizz() {
+    const promise = axios.get(`${url}/1`);
+    const promise = axios.get(`${url}/1`); /* <----- esse 1 tem que ser o id do quizz */
+    promise.then(showQuizz);
+}
 
+function showQuizz(array) {
+    quizz = array.data
+    questions = quizz.questions
+    let content = document.querySelector(".content");
+    content.innerHTML = ` 
+              <header class="header-quizz">
+                  <div><span>${quizz.title}</span></div>
+                  <img src="${quizz.image}">
+               </header>
+      `
+    for (let i = 0; i < questions.length; i++) {
+        const quest = questions[i];
+        answer = quest.answers;
+        answer.sort(ramdomize);
+        content.innerHTML += `
+            <div class="question pending">
+                <div class='question-title'>${quest.title}</div>
+                <div class="answers">
+                    <div class="overlay hidden"></div>
+                    <div class="${answer[0].isCorrectAnswer}" onclick="choose(this)">
+                         <img src="${answer[0].image}">
+                         <h3>${answer[0].text}</h3>
+                    </div>
+                    <div class="${answer[1].isCorrectAnswer}" onclick="choose(this)">
+                         <img src="${answer[1].image}">
+                         <h3>${answer[1].text}</h3>
+                    </div>
+                    <div class="${answer[2].isCorrectAnswer}" onclick="choose(this)">
+                         <img src="${answer[2].image}">
+                         <h3>${answer[2].text}</h3>
+                    </div>
+                    <div class="${answer[3].isCorrectAnswer}" onclick="choose(this)">
+                         <img src="${answer[3].image}">
+                         <h3>${answer[3].text}</h3>
+                    </div>
+                </div>
+            </div>
+        `
+    }
+}
+function choose(element) {
+    element.classList.add('chosen');
+    let parent = element.parentNode;
+    let pendind = document.querySelector('.pending')
+    pendind.classList.remove('pending')
+    let overlay = parent.querySelector('.overlay');
+    overlay.classList.remove('hidden')
+    let allFalse = parent.querySelectorAll('.false');
+    for (let i = 0; i < allFalse.length; i++) {
+        allFalse[i].classList.add('color')
+    }
+    parent.querySelector('.true').classList.add('color')
+    if (element.classList.contains('true')) {
+        points++;
+    }
+    plays++;
+    setTimeout(scrollToNext, 2000);
+    if (plays === questions.length) {
+        showResult();
+    }
+}
+function scrollToNext() {
+    const nextQ = document.querySelector('.pending');
+    nextQ.scrollIntoView({ block: "start", behavior: "smooth" });
+}
+function showResult() {
+    let content = document.querySelector(".content");
+    content.innerHTML += `
+    <div class="result pending">
+        <div class="result-title"> 88% de acerto: Você é praticamente um aluno de Hogwarts!</div>
+        <div>
+                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1vzu6nGA7j1-4pz4eeM-6WzZPPHZb_6ckwA&usqp=CAU">
+                 <p>Parabéns Potterhead! Bem-vindx a Hogwarts, aproveite o loop infinito de comida e clique no botão
+            abaixo para usar o vira-tempo e reiniciar este teste.</p>
+        </div>
+    </div>
+    `
+}
+/* Fim Fabio */
 
 
 
