@@ -252,63 +252,7 @@ input {
     transition: all linear 200ms;
   }
 
-@media (max-width: 1100px){
-    .content{
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .my-quizzes-null{
-        width: 80%;
-        
-    }
-
-    .my-quizzes {
-        width: 90%;
-    }
-    .all-quizzes{
-        width: 80%;
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-    }    
-    .quizz {
-        margin-right: 0px;
-    }
-    .quizz span {
-        position: absolute;
-        left: 10px;
-        bottom: 10px;
-        color: white;
-        text-align: left;
-        line-break: auto;
-        font-size: 17px;
-    }
-}
-
-/*Fim Mateus*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Inicio Fabio */
-
-.header-quizz {
+  .header-quizz {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -457,5 +401,57 @@ input {
     font-size: 23px;
     font-weight: 700;
 }
+
+@media (max-width: 1100px){
+    .content{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .my-quizzes-null{
+        width: 80%;
+        
+    }
+
+    .my-quizzes {
+        width: 90%;
+    }
+    .all-quizzes{
+        width: 80%;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }    
+    .quizz {
+        margin-right: 0px;
+    }
+    .quizz span {
+        position: absolute;
+        left: 10px;
+        bottom: 10px;
+        color: white;
+        text-align: left;
+        line-break: auto;
+        font-size: 17px;
+    }
+}
+
+/*Fim Mateus*/
+
+
+
+
+
+
+
+
+
+
+
+/* Inicio Fabio */
+
 
 /* Fim Fabio */

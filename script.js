@@ -1,9 +1,11 @@
 //inicio Mateus
-const url = "https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes";
+const url = "https://mock-api.driven.com.br/api/v7/buzzquizz/quizzes";
 let quizzes;
 let selfIds = [];
 let intervalRenderQuizz;
 let content = document.querySelector(".content");
+
+let object;   
 
 //setInterval(findQuizzes, 5000);
 
@@ -96,6 +98,55 @@ function tratarErro(erro){
 
 //Fim da parte para Renderizar tela inicial e ir para o quizz clicado
 
+
+function createObject(title, img, Questions1) {
+    object = {
+        title: title, 
+        image: img,
+        questions: [
+            {
+                title: "",
+                color: "",
+                answers: [
+                    {
+                        text: "",
+                        image: "",
+                        isCorrectAnswer: Boolean    
+                    }
+                ]
+            }
+        ],
+        levels: [
+            {
+                title: "",
+                image: "",
+                text: "",
+                minValue: Number
+            }
+        ]
+    };
+    for(let i = 0; i < Questions1; i++){
+        object.questions[i].title = document.querySelector(`.questions${i}`);
+        object.questions[i].color = document.querySelector(`.question-color${i}`);
+        object.questions[i].answers[0].text = document.querySelectorAll(`.correct-answer${i}`);
+        object.questions[i].answers[0].img = document.querySelectorAll(`.answerTrue-img${i}`);
+        object.questions[i].answers[0].isCorrectAnswer = true;
+        for(let j = 1; j <= incorrectAnswer.length; j++){
+            let incorrectAnswer = document.querySelectorAll(`.incorrect-answer${j}`);
+            incorrectAnswer = incorrectAnswer.filter(function (i) {
+                return i;
+            });
+            let incorrectImg = document.querySelectorAll(`answerFalse-img${j}`);
+            incorrectAnswer = incorrectAnswer.filter(function (i) {
+                return i;
+            });
+            object.questions[i].answers[j].text = incorrectAnswer[j];
+            object.questions[i].answers[j].image = incorrectImg[j];
+            object.questions[i].answers[j].isCorrectAnswer = false;
+        }    
+    }  
+}
+
 //Começo da parte para criar Quizz
 
 function createQuizz(){
@@ -138,51 +189,6 @@ function createQuizzValidation() {
     }
 }
 
-function createObject(title, img, Questions, Levels) {
-let object = {
-    title: title, 
-    image: img,
-    questions: [
-        {
-            title: "",
-            color: "",
-            answers: [
-                {
-                    text: "",
-                    image: "",
-                    isCorrectAnswer: Boolean    
-                }
-            ]
-        }
-    ],
-    levels: [
-        {
-            title: "",
-            image: "",
-            text: "",
-            minValue: Number
-        }
-    ]
-}   
-let incorrectAnswer = [];
-for(let i = 1; i <= Questions1; i++){
-    incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i}`)
-    incorrectAnswer = incorrectAnswer.filter(function (i) {
-        return i;
-      });
-    object.questions[i].title = document.querySelector(`.questions${i}`)
-    object.questions[i].color = document.querySelector(`.question-color${i}`)
-    for(let j = 1; j < incorrectAnswer.length; j++){
-        object.questions[i].answers[j].text = incorrectAnswer[j];
-    }
-
-
-
-    
-}
-
-}
-
 function createQuestions(title, img, Questions1, Levels) {
     content.innerHTML = "";
     content.innerHTML += '<h2>Crie suas perguntas</h2>';
@@ -191,33 +197,33 @@ function createQuestions(title, img, Questions1, Levels) {
         `
             <div class="question-box fechada" >
                 <h3>Pergunta ${i+1}<ion-icon name="create-outline" onclick="openLevels(this)"></ion-icon></h3>
-                <textarea name="question" class="question${i+1}" placeholder="Texto da pergunta"></textarea>
-                <textarea name="question-color" class="question-color${i+1}" placeholder="Cor de fundo da pergunta"></textarea>
+                <textarea name="question" class="question${i}" placeholder="Texto da pergunta"></textarea>
+                <textarea name="question-color" class="question-color${i}" placeholder="Cor de fundo da pergunta"></textarea>
   
                 <h3>Resposta correta</h3>
-                <textarea name="correct-answer" class="correct-answer${i+1}" placeholder="Resposta correta"></textarea>
-                <textarea name="answer-img" class="answer-img" placeholder="URL da imagem"></textarea>
+                <textarea name="correct-answer" class="correct-answer${i}" placeholder="Resposta correta"></textarea>
+                <textarea name="answer-img" class="answerTrue-img${i}" placeholder="URL da imagem"></textarea>
   
                 <h3>Respostas incorretas</h3>
                 <textarea name="incorrect-answer" class="incorrect-answer${i+1}" placeholder="Resposta incorreta 1"></textarea>
-                <textarea name="answer-img" class="answer-img" placeholder="URL da imagem 1"></textarea>
+                <textarea name="answer-img" class="answerFalse-img${i+1}" placeholder="URL da imagem 1"></textarea>
   
                 <textarea name="incorrect-answer" class="incorrect-answer${i+1}" placeholder="Resposta incorreta 2"></textarea>
-                <textarea name="answer-img" class="answer-img" placeholder="URL da imagem 2"></textarea>
+                <textarea name="answer-img" class="answerFalse-img${i+1}" placeholder="URL da imagem 2"></textarea>
   
                 <textarea name="incorrect-answer}" class="incorrect-answer${i+1}" placeholder="Resposta incorreta 3"></textarea>
-                <textarea name="answer-img" class="answer-img" placeholder="URL da imagem 3"></textarea>
+                <textarea name="answer-img" class="answerFalse-img${i+1}" placeholder="URL da imagem 3"></textarea>
             </div>
         `
     };
 
     content.innerHTML +=  `
-              <div class="redButton1" onclick="verifyFinishQuiz()">
+              <div class="redButton1" onclick="verifyFinishQuiz(${Questions1}, ${Levels})">
                   <p>Prosseguir pra criar níveis</p>
               </div>
                 `
-    //createObject(title, img, Questions1, Levels);
-  }   
+    createObject(title, img, Questions1);
+}   
 
 //Parte para verificar os niveis do quizz
 
@@ -285,7 +291,7 @@ function verifyFinishQuizz(qnt){
     finishQuizz(arrayLevels);
 }
 
-function checkUrl(string, qnt) {
+function checkUrl(string) {
     try {
         let url = new URL(string)
         return true;
@@ -296,16 +302,13 @@ function checkUrl(string, qnt) {
 
 //Finalizada parte para verificar niveis do quizz
 
-
 findQuizzes();
 
-//Fim mateus
 
 function goToQuizz(element){
     getQuizz(element);
 }
 
-/* Inicio Fabio */
 let answer;
 let points = 0;
 let plays = 0;
