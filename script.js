@@ -7,8 +7,6 @@ let content = document.querySelector(".content");
 
 let object;   
 
-//setInterval(findQuizzes, 5000);
-
 //parte para Renderizar tela inicial e ir para o quizz clicado
 
 function renderQuizzesTela1(array){
@@ -125,23 +123,27 @@ function createObject(title, img, Questions1) {
             }
         ]
     };
+    let incorrectAnswer;
+    let incorrectImg;
     for(let i = 0; i < Questions1; i++){
-        object.questions[i].title = document.querySelector(`.questions${i}`);
-        object.questions[i].color = document.querySelector(`.question-color${i}`);
-        object.questions[i].answers[0].text = document.querySelectorAll(`.correct-answer${i}`);
-        object.questions[i].answers[0].img = document.querySelectorAll(`.answerTrue-img${i}`);
+        object.questions[i].title = document.querySelector(`.questions${i}`).value;
+        object.questions[i].color = document.querySelector(`.question-color${i}`).value;
+        object.questions[i].answers[0].text = document.querySelectorAll(`.correct-answer${i}`).value;
+        object.questions[i].answers[0].img = document.querySelectorAll(`.answerTrue-img${i}`).value;
         object.questions[i].answers[0].isCorrectAnswer = true;
+
+        incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i+1}`).value;
+        incorrectAnswer = incorrectAnswer.filter(function (i) {
+            return i;
+        });
+        
+        incorrectImg = document.querySelectorAll(`answerFalse-img${i+1}`).value;
+        incorrectAnswer = incorrectAnswer.filter(function (i) {
+            return i;
+        });
         for(let j = 1; j <= incorrectAnswer.length; j++){
-            let incorrectAnswer = document.querySelectorAll(`.incorrect-answer${j}`);
-            incorrectAnswer = incorrectAnswer.filter(function (i) {
-                return i;
-            });
-            let incorrectImg = document.querySelectorAll(`answerFalse-img${j}`);
-            incorrectAnswer = incorrectAnswer.filter(function (i) {
-                return i;
-            });
-            object.questions[i].answers[j].text = incorrectAnswer[j];
-            object.questions[i].answers[j].image = incorrectImg[j];
+            object.questions[i].answers[j].text = incorrectAnswer[j-1];
+            object.questions[i].answers[j].image = incorrectImg[j-1];
             object.questions[i].answers[j].isCorrectAnswer = false;
         }    
     }  
@@ -318,7 +320,6 @@ function ramdomize() {
     return Math.random() - 0.5;
 }
 
-/* getQuizz();  chamar essa função para carregar o quizz   */
 function getQuizz(element) {
     for(let i = 0; i < quizzes.length; i++){
         if(quizzes[i].id === element.id){
@@ -408,7 +409,7 @@ function showResult() {
     </div>
     `
 }
-/* Fim Fabio */
+
 
 
 
