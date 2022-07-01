@@ -7,7 +7,21 @@ let content = document.querySelector(".content");
 
 let object;   
 
-//parte para Renderizar tela inicial e ir para o quizz clicado
+let points = 0;
+let plays = 0;
+let quizz;
+let myQuizzes;
+
+let title;
+let img;
+let qntQuestions;
+let qntLevels;
+
+let colortest = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
+
+///////////////////////////////////////////////////////////////////////
+//              Tela inicial para renderizar os quizzes              //
+///////////////////////////////////////////////////////////////////////
 
 function renderQuizzesTela1(array){
     content.innerHTML = "";
@@ -94,62 +108,31 @@ function tratarErro(erro){
     }
 }
 
-//Fim da parte para Renderizar tela inicial e ir para o quizz clicado
+///////////////////////////////////////////////////////////////////////
+//Fim da parte para Renderizar tela inicial e ir para o quizz clicado//
+///////////////////////////////////////////////////////////////////////
 
 
-function createObject(title, img, Questions1) {
-    object = {
-        title: title, 
-        image: img,
-        questions: [
-            {
-                title: "",
-                color: "",
-                answers: [
-                    {
-                        text: "",
-                        image: "",
-                        isCorrectAnswer: Boolean    
-                    }
-                ]
-            }
-        ],
-        levels: [
-            {
-                title: "",
-                image: "",
-                text: "",
-                minValue: Number
-            }
-        ]
-    };
-    let incorrectAnswer;
-    let incorrectImg;
-    for(let i = 0; i < Questions1; i++){
-        object.questions[i].title = document.querySelector(`.questions${i}`).value;
-        object.questions[i].color = document.querySelector(`.question-color${i}`).value;
-        object.questions[i].answers[0].text = document.querySelectorAll(`.correct-answer${i}`).value;
-        object.questions[i].answers[0].img = document.querySelectorAll(`.answerTrue-img${i}`).value;
-        object.questions[i].answers[0].isCorrectAnswer = true;
-
-        incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i+1}`).value;
-        incorrectAnswer = incorrectAnswer.filter(function (i) {
-            return i;
-        });
-
-        incorrectImg = document.querySelectorAll(`answerFalse-img${i+1}`).value;
-        incorrectAnswer = incorrectAnswer.filter(function (i) {
-            return i;
-        });
-        for(let j = 1; j <= incorrectAnswer.length; j++){
-            object.questions[i].answers[j].text = incorrectAnswer[j-1];
-            object.questions[i].answers[j].image = incorrectImg[j-1];
-            object.questions[i].answers[j].isCorrectAnswer = false;
-        }    
-    }  
+///////////////////////////////////////////////////////////////////////
+//              Inicio lógica para criar um novo quizz               //
+///////////////////////////////////////////////////////////////////////
+function openLevels(elemento){
+    elemento.parentNode.parentNode.classList.toggle("fechada")
+    elemento.classList.add("hidden");
 }
 
-//Começo da parte para criar Quizz
+function checkUrl(string) {
+    try {
+        let url = new URL(string)
+        return true;
+    }catch(err) {
+        return false;
+   }
+ }
+
+ function isHexColor(hex) {
+    return colortest.test(hex);
+}
 
 function createQuizz(){
     content.innerHTML = ''
@@ -192,6 +175,10 @@ function createQuizzValidation() {
 }
 
 function createQuestions(title, img, Questions1, Levels) {
+    title = title;
+    img = img;
+    qntQuestions = Questions1;
+    qntLevels = Levels;
     content.innerHTML = "";
     content.innerHTML += '<h2>Crie suas perguntas</h2>';
     for (let i = 0; i < Questions1; i++) {
@@ -220,24 +207,145 @@ function createQuestions(title, img, Questions1, Levels) {
     };
 
     content.innerHTML +=  `
-              <div class="redButton1" onclick="verifyFinishQuiz(${Questions1}, ${Levels})">
+              <div class="redButton1" onclick="verifyFinishQuestions()">
                   <p>Prosseguir pra criar níveis</p>
               </div>
                 `
-    createObject(title, img, Questions1);
 }   
 
-//Parte para verificar os niveis do quizz
+createQuestions("sou um novo quizz", "https://pbs.twimg.com/media/EqsmqxpVgAAWSxb.jpg", 1, 1);
 
-function openLevels(elemento){
-    elemento.parentNode.parentNode.classList.toggle("fechada")
-    elemento.classList.add("hidden");
+function verifyFinishQuestions(){
+    let incorrectAnswer;
+    let incorrectImg;
+    let incorrectValue = [];
+    let imgIncorrectValue = [];
+    for(let i = 0; i < qntQuestions; i++){
+        if(document.querySelector(`.question${i}`).value.length < 20){
+            alert(`Prencha os dados corretamente da questão${i+1}`);
+            return;
+        }
+        if(isHexColor(document.querySelector(`.question-color${i}`).value) === false){
+            alert(`Prencha os dados corretamente da cor da questao${i+1}`);
+            return; 
+        }
+        if(document.querySelector(`.correct-answer${i}`).value === ''){
+            alert(`Prencha os dados corretamente da resposta correta${i+1}`);
+            return;
+        }
+        if(checkUrl(document.querySelector(`.answerTrue-img${i}`).value) === false){
+            alert(`Prencha os dados corretamente da imagem da resposta correta${i+1}`);
+            return;
+        }
+
+        /*Verificar respostas incorretas vazias*/
+        incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i+1}`);
+        for(let k = 0; k < incorrectAnswer.length; k++){
+            incorrectValue[k] = incorrectAnswer[k].value;
+        }
+        incorrectValue = incorrectValue.filter(function (i) {
+            return i;
+        });
+        if(incorrectValue.length === 0){
+            alert(`Prencha os dados corretamente da resposta incorreta${i+1}`);
+            return;
+        }
+        /*Verificar imagens das respostas incorretas*/
+        incorrectImg = document.querySelectorAll(`.answerFalse-img${i+1}`);
+        for(let l = 0; l < incorrectImg.length; l++){
+            imgIncorrectValue[l] = incorrectImg[l].value;
+        }
+        imgIncorrectValue = imgIncorrectValue.filter(function (i) {
+            return i;
+        });
+        if(imgIncorrectValue.length === 0){
+            alert(`Prencha os dados corretamente da imagem da resposta incorreta${i+1}`);
+            return;
+        }
+        incorrectValue = incorrectAnswer;
+        imgIncorrectValue = incorrectImg;
+        for(let m = 0; m < incorrectValue.length; m++){
+            if(checkUrl(imgIncorrectValue[m].value) === false && imgIncorrectValue[m].value !== ''){
+                alert(`Prencha corretamente as urls das respostas incorretas`);
+                return;
+            }
+            if(incorrectValue[m].value === '' && imgIncorrectValue[m].value !== ''){
+                alert(`Prencha os dados corretamente`);
+                return;
+            }
+        }
+        
+    }
+    createObject();
+    createQuizzLevels();
 }
 
-function createQuizzLevels(qnt){
+function createObject() {
+    object = {
+        title: title, 
+        image: img,
+        questions: [
+            {
+                title: "",
+                color: "",
+                answers: [
+                    {
+                        text: "",
+                        image: "",
+                        isCorrectAnswer: Boolean    
+                    }
+                ]
+            }
+        ],
+        levels: [
+            {
+                title: "",
+                image: "",
+                text: "",
+                minValue: Number
+            }
+        ]
+    };
+    let incorrectAnswer;
+    let incorrectImg;
+    let incorrectValue = [];
+    let imgIncorrectValue = [];
+    for(let i = 0; i < qntQuestions; i++){
+        object.questions[i].title = document.querySelector(`.question${i}`).value;
+        object.questions[i].color = document.querySelector(`.question-color${i}`).value;
+        object.questions[i].answers[0].text = document.querySelector(`.correct-answer${i}`).value;
+        object.questions[i].answers[0].img = document.querySelector(`.answerTrue-img${i}`).value;
+        object.questions[i].answers[0].isCorrectAnswer = true;
+
+        incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i+1}`);
+        for(let k = 0; k < incorrectAnswer.length; k++){
+            incorrectValue[k] = incorrectAnswer[k].value;
+        }
+        incorrectValue = incorrectValue.filter(function (i) {
+            return i;
+        });
+
+
+        incorrectImg = document.querySelectorAll(`.answerFalse-img${i+1}`);
+        for(let l = 0; l < incorrectImg.length; l++){
+            imgIncorrectValue[l] = incorrectImg[l].value;
+        }
+        imgIncorrectValue = imgIncorrectValue.filter(function (i) {
+            return i;
+        });
+        console.log(incorrectValue[0]);
+        for(let j = 1; j <= incorrectValue.length; j++){
+            object.questions[i].answers[j].text = incorrectValue[j-1];
+            object.questions[i].answers[j].image = imgIncorrectValue[j-1];
+            object.questions[i].answers[j].isCorrectAnswer = false;
+        }    
+    }  
+}
+
+function createQuizzLevels(){
     content.innerHTML= "";
     content.innerHTML+= `<h2>Agora, Decida os níveis</h2>`
-    for(let i = 1; i <= qnt; i++){
+    for(let i = 1; i <= qntLevels; i++){
         content.innerHTML+=`
         <div class="levels-box fechada">
             <h3>Nível ${i} <ion-icon name="create-outline" onclick="openLevels(this)"></ion-icon></h3>
@@ -249,73 +357,54 @@ function createQuizzLevels(qnt){
         `
     }
     content.innerHTML+=` 
-            <div class="redButton1" onclick="verifyFinishQuiz(qnt)">
+            <div class="redButton1" onclick="verifyFinishQuiz()">
                 <p>Finalizar Quizz</p>
             </div>
     `
 }
 
-function verifyFinishQuizz(qnt){
-    let arrayLevels = [
-        {
-            titulo: '',
-            acerto: '',
-            URL: '',
-            descricao: ''
-        }
-    ];
+function verifyFinishQuizz(){
     let titulos = document.querySelectorAll("textarea.titulo").value;
     let acertos = document.querySelectorAll("textarea.acerto").value;
     let urls = document.querySelectorAll("textarea.url").value;
     let descricoes = document.querySelectorAll("textarea.descricao").value;
     let flag = 0;
-    for(let i = 0; i < qnt; i++){
+    for(let i = 0; i < qntLevels; i++){
         if(!(checkUrl(urls[i]))){
             alert("Preencha os dados corretamente!!!")
-            createQuizzLevels(qnt);
+            return;
         }
         if(acertos[i] !== 0){
             flag++
-            if(flag === qnt-1){
+            if(flag === qntLevels-1){
                 alert("Preencha os dados corretamente!!!")
-                createQuizzLevels(qnt);    
+                return;    
             }
         }
         if(titulos[i].length < 10 || (acertos[i] < 0 && acertos[i] > 100) || descricoes[i].length < 30){
             alert("Preencha os dados corretamente!!!")
-            createQuizzLevels(qnt);
+            return;
         }
-        arrayLevels[i].titulo = titulos[i];
-        arrayLevels[i].acerto = acertos[i];
-        arrayLevels[i].URL = urls[i];
-        arrayLevels[i].descricao = descricoes[i];
+        object.levels.title = titulos[i];
+        object.levels.image = urls[i];
+        object.levels.text = descricoes[i];
+        object.levels.minValue = acertos[i];
     }
-    finishQuizz(arrayLevels);
+    finishQuizz();
 }
 
-function checkUrl(string) {
-    try {
-        let url = new URL(string)
-        return true;
-    }catch(err) {
-        return false;
-   }
- }
+////////////////////////////////////////////////////////////// 
+//      Finalizada parte para verificar niveis do quizz     //
+//////////////////////////////////////////////////////////////
 
-//Finalizada parte para verificar niveis do quizz
-
-findQuizzes();
-
+/////////////////////////////////////////////////////////////
+//      Tela de resposta do quiz a partir desse ponto      //
+/////////////////////////////////////////////////////////////
 
 function goToQuizz(element){
     getQuizz(element);
 }
 
-
-let points = 0;
-let plays = 0;
-let quizz;
-let myQuizzes;
 
 function ramdomize() {
     return Math.random() - 0.5;
@@ -334,9 +423,6 @@ function getQuizz(element) {
 
 function showQuizz(array) {
     quizz = array
-
-    /*  quizz.questions */
-
     content.innerHTML = ` 
               <header class="header-quizz">
                   <div><span>${quizz.title}</span></div>
@@ -467,3 +553,9 @@ function goHome() {
 
     findQuizzes();
 }
+
+///////////////////////////////////////////////////////////////////////
+//                               Fim                                 //
+///////////////////////////////////////////////////////////////////////
+
+//findQuizzes();
