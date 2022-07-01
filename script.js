@@ -1,5 +1,5 @@
 //inicio Mateus
-const url = "https://mock-api.driven.com.br/api/v6/buzzquizz/quizzes";
+const url = "https://mock-api.driven.com.br/api/v7/buzzquizz/quizzes";
 let quizzes;
 let selfIds = [];
 let selfIdsJson;
@@ -539,20 +539,16 @@ function choose(element) {
     if (!element.classList.contains('chosen')) {
         plays++;
         element.classList.add('chosen');
-        pendind.classList.remove('pending')
-        setTimeout(scrollToNext, 2000);
+
         if (plays === myQuizzes.questions.length) {
             finalResult();
         }
+
+        setTimeout(scrollToNext, 2000);
     }
 
 }
 
-
-function scrollToNext() {
-    const nextQ = document.querySelector('.pending');
-    nextQ.scrollIntoView({ block: "start", behavior: "smooth" });
-}
 
 function finalResult() {
     let average = Math.ceil((points / plays) * 100);
@@ -567,7 +563,6 @@ function finalResult() {
 
             temp = minValue;
             temp2 = quizz.levels[i];
-
         }
     }
 
@@ -578,6 +573,7 @@ function finalResult() {
             }
         }
     }
+    console.log(temp2)
     showResult(average, temp2)
 }
 
@@ -600,6 +596,16 @@ function showResult(average, resultlevel) {
     </div>
     `
 }
+
+
+function scrollToNext() {
+    document.querySelector('.pending').classList.remove('pending')
+
+    const nextQ = document.querySelector('.pending');
+
+    nextQ.scrollIntoView({ block: "start", behavior: "smooth" });
+}
+
 
 function restartQuizz() {
     plays = 0;
