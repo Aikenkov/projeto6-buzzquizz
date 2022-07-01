@@ -169,9 +169,9 @@ function createQuizzValidation() {
     if (
       title.length < 20 ||
       title.length > 65 ||
-      !checkUrl(img) /*||
+      !checkUrl(img) ||
       qntQuestions < 3 ||
-      qntLevels < 2*/
+      qntLevels < 2
     ) {
       alert('preencher os dados corretamente.')
     } else {
@@ -214,7 +214,7 @@ function createQuestions() {
                 `
 }   
 
-//createQuestions("sou um novo quizz", "https://pbs.twimg.com/media/EqsmqxpVgAAWSxb.jpg", 1, 1);
+
 
 function verifyFinishQuestions(){
     for(let i = 0; i < qntQuestions; i++){
@@ -307,31 +307,36 @@ function createObject() {
         ]
     };
     for(let i = 0; i < qntQuestions; i++){
+        object.questions[i] = {
+            title: "",
+            color: "",
+            answers: [
+                {
+                    text: "",
+                    image: "",
+                    isCorrectAnswer: Boolean    
+                },
+            ]
+        }
         object.questions[i].title = document.querySelector(`.question${i}`).value;
         object.questions[i].color = document.querySelector(`.question-color${i}`).value;
         object.questions[i].answers[0].text = document.querySelector(`.correct-answer${i}`).value;
         object.questions[i].answers[0].img = document.querySelector(`.answerTrue-img${i}`).value;
         object.questions[i].answers[0].isCorrectAnswer = true;
-        console.log("tamo aqui1")
-
-
         incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i+1}`);
         for(let k = 0; k < incorrectAnswer.length; k++){
             incorrectValue[k] = incorrectAnswer[k].value;
         }
-        console.log(incorrectValue);
-
-
         incorrectImg = document.querySelectorAll(`.answerFalse-img${i+1}`);
         for(let l = 0; l < incorrectImg.length; l++){
             imgIncorrectValue[l] = incorrectImg[l].value;
         }
-        console.log(incorrectImg);
-        
-
-
-        console.log("tamo aqui2", incorrectValue, imgIncorrectValue);
         for(let j = 1; j <= incorrectValue.length; j++){
+            object.questions[i].answers[j] = {
+                text: "",
+                image: "",
+                isCorrectAnswer: Boolean    
+            };
             object.questions[i].answers[j].text = incorrectValue[j-1].value;
             object.questions[i].answers[j].image = imgIncorrectValue[j-1].value;
             object.questions[i].answers[j].isCorrectAnswer = false;
@@ -382,6 +387,12 @@ function verifyFinishQuizz(){
             alert("Preencha os dados corretamente!!!")
             return;
         }
+        object.levels[i] = {
+            title: "",
+            image: "",
+            text: "",
+            minValue: Number
+        };
         object.levels.title = titulos[i];
         object.levels.image = urls[i];
         object.levels.text = descricoes[i];
