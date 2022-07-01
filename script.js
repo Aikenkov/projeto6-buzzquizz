@@ -136,7 +136,7 @@ function createObject(title, img, Questions1) {
         incorrectAnswer = incorrectAnswer.filter(function (i) {
             return i;
         });
-        
+
         incorrectImg = document.querySelectorAll(`answerFalse-img${i+1}`).value;
         incorrectAnswer = incorrectAnswer.filter(function (i) {
             return i;
@@ -311,108 +311,159 @@ function goToQuizz(element){
     getQuizz(element);
 }
 
-let answer;
+
 let points = 0;
 let plays = 0;
-let questions;
 let quizz;
+let myQuizzes;
+
 function ramdomize() {
     return Math.random() - 0.5;
 }
 
 function getQuizz(element) {
-    for(let i = 0; i < quizzes.length; i++){
-        if(quizzes[i].id === element.id){
-            showQuizz(quizzes[i]);
+    for (let i = 0; i < quizzes.length; i++) {
+        if (Number(quizzes[i].id) === Number(element.id)) {
+            myQuizzes = quizzes[i];
+            showQuizz(quizzes[i])
+
         }
     }
+
 }
 
 function showQuizz(array) {
     quizz = array
-    questions = quizz.questions
-    console.log(array)
-    console.log(quizz)
-    console.log(questions)
-    let content = document.querySelector(".content");
+
+    /*  quizz.questions */
+
     content.innerHTML = ` 
               <header class="header-quizz">
                   <div><span>${quizz.title}</span></div>
                   <img src="${quizz.image}">
                </header>
       `
-    for (let i = 0; i < questions.length; i++) {
-        const quest = questions[i];
-        answer = quest.answers;
+
+    for (let i = 0; i < quizz.questions.length; i++) {
+        let quest = quizz.questions[i];
+        let answer = quest.answers;
         answer.sort(ramdomize);
+
+
         content.innerHTML += `
             <div class="question pending">
-                <div class='question-title'>${quest.title}</div>
-                <div class="answers">
+                <div class='question-title cl${i}'><h2>${quest.title}</h2></div>
+                <div class="answers an${i} ">
                     <div class="overlay hidden"></div>
-                    <div class="${answer[0].isCorrectAnswer}" onclick="choose(this)">
-                         <img src="${answer[0].image}">
-                         <h3>${answer[0].text}</h3>
-                    </div>
-                    <div class="${answer[1].isCorrectAnswer}" onclick="choose(this)">
-                         <img src="${answer[1].image}">
-                         <h3>${answer[1].text}</h3>
-                    </div>
-                    <div class="${answer[2].isCorrectAnswer}" onclick="choose(this)">
-                         <img src="${answer[2].image}">
-                         <h3>${answer[2].text}</h3>
-                    </div>
-                    <div class="${answer[3].isCorrectAnswer}" onclick="choose(this)">
-                         <img src="${answer[3].image}">
-                         <h3>${answer[3].text}</h3>
-                    </div>
                 </div>
             </div>
+            
         `
+        document.querySelector(`.cl${i}`).style.backgroundColor = `${quest.color}`;
+
+        for (let j = 0; j < answer.length; j++) {
+            let last = document.querySelector(`.an${i}`)
+            last.innerHTML += `
+                          <div class="${answer[j].isCorrectAnswer}" onclick="choose(this)">
+                              <img src="${answer[j].image}">
+                              <h3>${answer[j].text}</h3>
+                       </div>`
+        }
     }
+
+    document.querySelector('.question').classList.add('first-margin')
 }
+
 function choose(element) {
     element.classList.add('chosen');
     let parent = element.parentNode;
+
     let pendind = document.querySelector('.pending')
     pendind.classList.remove('pending')
+
     let overlay = parent.querySelector('.overlay');
     overlay.classList.remove('hidden')
+
     let allFalse = parent.querySelectorAll('.false');
     for (let i = 0; i < allFalse.length; i++) {
         allFalse[i].classList.add('color')
     }
+
     parent.querySelector('.true').classList.add('color')
     if (element.classList.contains('true')) {
         points++;
     }
+
     plays++;
+
     setTimeout(scrollToNext, 2000);
-    if (plays === questions.length) {
-        showResult();
+    if (plays === myQuizzes.questions.length) {
+        finalResult();
     }
 }
+
 function scrollToNext() {
     const nextQ = document.querySelector('.pending');
     nextQ.scrollIntoView({ block: "start", behavior: "smooth" });
 }
-function showResult() {
-    let content = document.querySelector(".content");
-    content.innerHTML += `
-    <div class="result pending">
-        <div class="result-title"> 88% de acerto: Você é praticamente um aluno de Hogwarts!</div>
-        <div>
-                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1vzu6nGA7j1-4pz4eeM-6WzZPPHZb_6ckwA&usqp=CAU">
-                 <p>Parabéns Potterhead! Bem-vindx a Hogwarts, aproveite o loop infinito de comida e clique no botão
-            abaixo para usar o vira-tempo e reiniciar este teste.</p>
-        </div>
-    </div>
-    `
+
+function finalResult() {
+    let average = Math.ceil((points / plays) * 100);
+
+    let temp = 0;
+    let temp2;
+
+    for (let i = 0; i < quizz.levels.length; i++) {
+
+        let minValue = quizz.levels[i].minValue;
+        if (average >= temp && average >= minValue && minValue > temp) {
+
+            temp = minValue;
+            temp2 = quizz.levels[i];
+
+        }
+    }
+
+    if (temp2 === undefined) {
+        for (let i = 0; i < quizz.levels.length; i++) {
+            if (quizz.levels[i].minValue === 0) {
+                temp2 = quizz.levels[i];
+            }
+        }
+    }
+    showResult(average, temp2)
 }
 
 
 
+function showResult(average, resultlevel) {
 
+    content.innerHTML += `
+    <div class="result pending">
+        <div class="result-title">${average}% de acerto: ${resultlevel.title}</div>
+        <div>
+                 <img src="${resultlevel.image}">
+                 <p>${resultlevel.text}</p>
+        </div>
+    </div>
 
+    <div class="restart-buttom">
+        <div onclick="restartQuizz()" class="restart-quizz">Reiniciar Quizz</div>
+        <span class="go-home" onclick="goHome()">Voltar pra home</span>
+    </div>
+    `
+}
 
+function restartQuizz() {
+    plays = 0;
+    points = 0;
+    getQuizz(myQuizzes)
+    document.querySelector(".header-quizz").scrollIntoView({ block: "start", behavior: "smooth" });
+}
 
+function goHome() {
+    plays = 0;
+    points = 0;
+
+    findQuizzes();
+}
