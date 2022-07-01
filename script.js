@@ -539,7 +539,7 @@ function choose(element) {
     if (!element.classList.contains('chosen')) {
         plays++;
         element.classList.add('chosen');
-
+        pendind.classList.remove('pending')
         if (plays === myQuizzes.questions.length) {
             finalResult();
         }
@@ -559,11 +559,20 @@ function finalResult() {
     for (let i = 0; i < quizz.levels.length; i++) {
 
         let minValue = quizz.levels[i].minValue;
+        if (average >= temp && average >= minValue) {
+
+            temp = minValue;
+            temp2 = quizz.levels[i];
+
+        }
+
         if (average >= temp && average >= minValue && minValue > temp) {
 
             temp = minValue;
             temp2 = quizz.levels[i];
         }
+
+
     }
 
     if (temp2 === undefined) {
@@ -599,11 +608,10 @@ function showResult(average, resultlevel) {
 
 
 function scrollToNext() {
-    document.querySelector('.pending').classList.remove('pending')
-
-    const nextQ = document.querySelector('.pending');
-
-    nextQ.scrollIntoView({ block: "start", behavior: "smooth" });
+    if (document.querySelectorAll('.pending').length > 0) {
+        const nextQ = document.querySelector('.pending')
+        nextQ.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    }
 }
 
 
