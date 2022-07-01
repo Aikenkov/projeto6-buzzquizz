@@ -1,7 +1,8 @@
 //inicio Mateus
-const url = "https://mock-api.driven.com.br/api/v7/buzzquizz/quizzes";
+const url = "https://mock-api.driven.com.br/api/v6/buzzquizz/quizzes";
 let quizzes;
 let selfIds = [];
+let selfIdsJson;
 let intervalRenderQuizz;
 let content = document.querySelector(".content");
 
@@ -29,9 +30,13 @@ let imgIncorrectValue = [];
 ///////////////////////////////////////////////////////////////////////
 
 function renderQuizzesTela1(array){
+    const ids = localStorage.getItem("ids");
+    const listIds = JSON.parse(ids);
+    console.log(listIds.length, listIds);
     content.innerHTML = "";
     quizzes = array.data; 
-    if(selfIds.length === 0){ 
+    if(listIds.length === 0){ 
+        
         content.innerHTML += `
         <div class="my-quizzes-null">
             <span>
@@ -57,47 +62,53 @@ function renderQuizzesTela1(array){
             </div>         
             `;
         }
-        
     }else{
-        content.innerHTML+= ` 
+        content.innerHTML+= 
+        ` 
         <div class="title">
-            <span><h1>Seus Quizzes</h1></span><span><ion-icon name="add-circle" onclick="createQuizz()></ion-icon></span>
+            <span>
+            <h1>Seus Quizzes</h1>
+            </span>
+            <ion-icon name="add-circle" onclick="createQuizz()"></ion-icon>
+        </div>    
+        `
+        ;
+        content.innerHTML+=`
+        <div class="createdQuizzes">
         </div>
-
-        <div class="my-quizzes">
-        </div>    
-
+        `
+        content.innerHTML+=`
         <h1>Todos os Quizzes</h1>
-
+        `
+        content.innerHTML+=`
         <div class="all-quizzes">
-        </div>    
-        `;
-        let myQuizzes = document.querySelector(".my-quizzes");
+        </div>  
+        `
+        
+        let myQuizzes1 = document.querySelector(".createdQuizzes");
         let allQuizzes = document.querySelector(".all-quizzes");
-        let flag = 0;
+
         for(let i = 0; i < quizzes.length; i++){
-            flag = 0;
-            for(let j = 0; j < selfIds.length; j++){
-                if(quizzes[i].id === selfIds[j]){
-                    myQuizzes.innerHTML+=`
-                        <div class="quizz" id="${quizzes[j].id} onclick="goToQuizz(this)">  
-                            <img src="${quizzes[j].image}">
-                            <span>${quizzes[j].title}</span>
-                        </div>         
-                    `;
-                    flag = 1;
-                }
-            }
-            if(flag === 0){
-                allQuizzes.innerHTML+= `
-                    <div class="quizz" id="${quizzes[i].id} onclick="goToQuizz(this)">  
+            for(let j = 0; j < listIds.length; j++){
+                if(listIds[j] === quizzes[i].id){
+                    myQuizzes1.innerHTML+=`
+                    <div class="quizz" id="${quizzes[i].id}" onclick="goToQuizz(this)">  
                         <img src="${quizzes[i].image}">
                         <span>${quizzes[i].title}</span>
                     </div>         
                 `;
+                }else{
+                    allQuizzes.innerHTML+= `
+                    <div class="quizz" id="${quizzes[i].id}" onclick="goToQuizz(this)">  
+                        <img src="${quizzes[i].image}">
+                        <span>${quizzes[i].title}</span>
+                    </div>         
+                    `;
+                }
             }
         }
     }
+    window.scrollTo(0, 0);
 }
 
 
@@ -321,25 +332,24 @@ function createObject() {
         object.questions[i].title = document.querySelector(`.question${i}`).value;
         object.questions[i].color = document.querySelector(`.question-color${i}`).value;
         object.questions[i].answers[0].text = document.querySelector(`.correct-answer${i}`).value;
-        object.questions[i].answers[0].img = document.querySelector(`.answerTrue-img${i}`).value;
+        object.questions[i].answers[0].image = document.querySelector(`.answerTrue-img${i}`).value;
         object.questions[i].answers[0].isCorrectAnswer = true;
+
         incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i+1}`);
-        for(let k = 0; k < incorrectAnswer.length; k++){
-            incorrectValue[k] = incorrectAnswer[k].value;
-        }
+  
         incorrectImg = document.querySelectorAll(`.answerFalse-img${i+1}`);
-        for(let l = 0; l < incorrectImg.length; l++){
-            imgIncorrectValue[l] = incorrectImg[l].value;
-        }
-        for(let j = 1; j <= incorrectValue.length; j++){
-            object.questions[i].answers[j] = {
-                text: "",
-                image: "",
-                isCorrectAnswer: Boolean    
-            };
-            object.questions[i].answers[j].text = incorrectValue[j-1].value;
-            object.questions[i].answers[j].image = imgIncorrectValue[j-1].value;
-            object.questions[i].answers[j].isCorrectAnswer = false;
+
+        for(let j = 1; j <= incorrectAnswer.length; j++){
+            if(incorrectAnswer[j-1].value !== ''){
+                object.questions[i].answers[j] = {
+                    text: "",
+                    image: "",
+                    isCorrectAnswer: Boolean    
+                };
+                object.questions[i].answers[j].text = incorrectAnswer[j-1].value;
+                object.questions[i].answers[j].image = incorrectImg[j-1].value;
+                object.questions[i].answers[j].isCorrectAnswer = false;
+            }
         }    
     }  
 }
@@ -359,32 +369,33 @@ function createQuizzLevels(){
         `
     }
     content.innerHTML+=` 
-            <div class="redButton1" onclick="verifyFinishQuiz()">
+            <div class="redButton1" onclick="verifyFinishQuizz()">
                 <p>Finalizar Quizz</p>
             </div>
     `
 }
 
+
 function verifyFinishQuizz(){
-    let titulos = document.querySelectorAll("textarea.titulo").value;
-    let acertos = document.querySelectorAll("textarea.acerto").value;
-    let urls = document.querySelectorAll("textarea.url").value;
-    let descricoes = document.querySelectorAll("textarea.descricao").value;
+    let titulos = document.querySelectorAll("textarea.titulo");
+    let acertos = document.querySelectorAll("textarea.acerto");
+    let urls = document.querySelectorAll("textarea.url");
+    let descricoes = document.querySelectorAll("textarea.descricao");
     let flag = 0;
     for(let i = 0; i < qntLevels; i++){
-        if(!(checkUrl(urls[i]))){
-            alert("Preencha os dados corretamente!!!")
+        if(!(checkUrl(urls[i].value))){
+            alert("Preencha os dados da url corretamente!!!")
             return;
         }
-        if(acertos[i] !== 0){
-            flag++
-            if(flag === qntLevels-1){
-                alert("Preencha os dados corretamente!!!")
-                return;    
-            }
+        if(acertos[i].value == 0){ 
+            flag = 1;
         }
-        if(titulos[i].length < 10 || (acertos[i] < 0 && acertos[i] > 100) || descricoes[i].length < 30){
-            alert("Preencha os dados corretamente!!!")
+        if(flag == 0 && i == qntLevels-1){
+            alert("Precisamos de um valor 0 de acertos em 1 nivel!!!")
+            return;    
+        }
+        if(titulos[i].value.length < 10 || (acertos[i].value < 0 && acertos[i].value > 100) || descricoes[i].value.length < 30){
+            alert("Preencha os dados da descrição/titulos corretamente!!!")
             return;
         }
         object.levels[i] = {
@@ -393,13 +404,42 @@ function verifyFinishQuizz(){
             text: "",
             minValue: Number
         };
-        object.levels.title = titulos[i];
-        object.levels.image = urls[i];
-        object.levels.text = descricoes[i];
-        object.levels.minValue = acertos[i];
+        object.levels[i].title = titulos[i].value;
+        object.levels[i].image = urls[i].value;
+        object.levels[i].text = descricoes[i].value;
+        object.levels[i].minValue = acertos[i].value;
     }
     finishQuizz();
 }
+
+function finishQuizz(){
+    content.innerHTML = "";
+    content.innerHTML +=   `            
+        <div class="" >
+            <h3>Seu quizz está pronto!</h3>
+            <div class="quizz" onclick="goToQuizz(this)">  
+                <img src="${object.image}">
+                <span>${object.title}</span>
+            </div>         
+            <div class="redButton1" onclick="verifyFinishQuiz()">
+                <p>Acessar Quizz</p>
+            </div>
+            <p class = "grey" onclick="createQuizz()">Voltar pra home</p> 
+        </div>
+        `
+    let promise = axios.post(url, object);
+    promise.then(sendToApi);
+}
+
+function sendToApi(resposta){
+    selfIds.push(resposta.data.id);
+    selfIdsJson = JSON.stringify(selfIds);
+
+    localStorage.setItem("ids", selfIdsJson);
+
+
+}
+
 
 ////////////////////////////////////////////////////////////// 
 //      Finalizada parte para verificar niveis do quizz     //
@@ -466,14 +506,14 @@ function showQuizz(array) {
     }
 
     document.querySelector('.question').classList.add('first-margin')
+    document.querySelector(".header-quizz").scrollIntoView({ block: "start", behavior: "smooth" });
 }
 
 function choose(element) {
-    element.classList.add('chosen');
-    let parent = element.parentNode;
 
+    let parent = element.parentNode;
     let pendind = document.querySelector('.pending')
-    pendind.classList.remove('pending')
+
 
     let overlay = parent.querySelector('.overlay');
     overlay.classList.remove('hidden')
@@ -484,17 +524,22 @@ function choose(element) {
     }
 
     parent.querySelector('.true').classList.add('color')
-    if (element.classList.contains('true')) {
+    if (element.classList.contains('true') && !element.classList.contains('chosen')) {
         points++;
     }
 
-    plays++;
-
-    setTimeout(scrollToNext, 2000);
-    if (plays === myQuizzes.questions.length) {
-        finalResult();
+    if (!element.classList.contains('chosen')) {
+        plays++;
+        element.classList.add('chosen');
+        pendind.classList.remove('pending')
+        setTimeout(scrollToNext, 2000);
+        if (plays === myQuizzes.questions.length) {
+            finalResult();
+        }
     }
+
 }
+
 
 function scrollToNext() {
     const nextQ = document.querySelector('.pending');
@@ -558,7 +603,6 @@ function restartQuizz() {
 function goHome() {
     plays = 0;
     points = 0;
-
     findQuizzes();
 }
 
