@@ -1,7 +1,8 @@
 //inicio Mateus
-const url = "https://mock-api.driven.com.br/api/v7/buzzquizz/quizzes";
+const url = "https://mock-api.driven.com.br/api/v6/buzzquizz/quizzes";
 let quizzes;
 let selfIds = [];
+let selfIdsJson;
 let intervalRenderQuizz;
 let content = document.querySelector(".content");
 
@@ -61,18 +62,26 @@ function renderQuizzesTela1(array) {
     } else {
         content.innerHTML += ` 
         <div class="title">
-            <span><h1>Seus Quizzes</h1></span><span><ion-icon name="add-circle" onclick="createQuizz()></ion-icon></span>
+            <span>
+            <h1>Seus Quizzes</h1>
+            </span>
+            <ion-icon name="add-circle" onclick="createQuizz()"></ion-icon>
+        </div>    
+        `
+            ;
+        content.innerHTML += `
+        <div class="createdQuizzes">
         </div>
-
-        <div class="my-quizzes">
-        </div>    
-
+        `
+        content.innerHTML += `
         <h1>Todos os Quizzes</h1>
-
+        `
+        content.innerHTML += `
         <div class="all-quizzes">
-        </div>    
-        `;
-        let myQuizzes = document.querySelector(".my-quizzes");
+        </div>  
+        `
+
+        let myQuizzes1 = document.querySelector(".createdQuizzes");
         let allQuizzes = document.querySelector(".all-quizzes");
         let flag = 0;
         for (let i = 0; i < quizzes.length; i++) {
@@ -95,10 +104,20 @@ function renderQuizzesTela1(array) {
                         <span>${quizzes[i].title}</span>
                     </div>         
                 `;
+            } else {
+                allQuizzes.innerHTML += `
+                    <div class="quizz" id="${quizzes[i].id}" onclick="goToQuizz(this)">  
+                        <img src="${quizzes[i].image}">
+                        <span>${quizzes[i].title}</span>
+                    </div>         
+                    `;
             }
         }
     }
+    window.scrollTo(0, 0);
 }
+
+
 
 
 function findQuizzes() {
@@ -321,7 +340,7 @@ function createObject() {
         object.questions[i].title = document.querySelector(`.question${i}`).value;
         object.questions[i].color = document.querySelector(`.question-color${i}`).value;
         object.questions[i].answers[0].text = document.querySelector(`.correct-answer${i}`).value;
-        object.questions[i].answers[0].img = document.querySelector(`.answerTrue-img${i}`).value;
+        object.questions[i].answers[0].image = document.querySelector(`.answerTrue-img${i}`).value;
         object.questions[i].answers[0].isCorrectAnswer = true;
         incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i + 1}`);
         for (let k = 0; k < incorrectAnswer.length; k++) {
@@ -393,13 +412,42 @@ function verifyFinishQuizz() {
             text: "",
             minValue: Number
         };
-        object.levels.title = titulos[i];
-        object.levels.image = urls[i];
-        object.levels.text = descricoes[i];
-        object.levels.minValue = acertos[i];
+        object.levels[i].title = titulos[i].value;
+        object.levels[i].image = urls[i].value;
+        object.levels[i].text = descricoes[i].value;
+        object.levels[i].minValue = acertos[i].value;
     }
     finishQuizz();
 }
+
+function finishQuizz() {
+    content.innerHTML = "";
+    content.innerHTML += `            
+        <div class="" >
+            <h3>Seu quizz está pronto!</h3>
+            <div class="quizz" onclick="goToQuizz(this)">  
+                <img src="${object.image}">
+                <span>${object.title}</span>
+            </div>         
+            <div class="redButton1" onclick="verifyFinishQuiz()">
+                <p>Acessar Quizz</p>
+            </div>
+            <p class = "grey" onclick="createQuizz()">Voltar pra home</p> 
+        </div>
+        `
+    let promise = axios.post(url, object);
+    promise.then(sendToApi);
+}
+
+function sendToApi(resposta) {
+    selfIds.push(resposta.data.id);
+    selfIdsJson = JSON.stringify(selfIds);
+
+    localStorage.setItem("ids", selfIdsJson);
+
+
+}
+
 
 ////////////////////////////////////////////////////////////// 
 //      Finalizada parte para verificar niveis do quizz     //
@@ -500,6 +548,7 @@ function choose(element) {
 
 }
 
+
 function scrollToNext() {
     const nextQ = document.querySelector('.pending');
     nextQ.scrollIntoView({ block: "start", behavior: "smooth" });
@@ -562,7 +611,6 @@ function restartQuizz() {
 function goHome() {
     plays = 0;
     points = 0;
-
     findQuizzes();
 }
 

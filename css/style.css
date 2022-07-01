@@ -101,14 +101,12 @@ h1 {
     font-size: 20px;
     font-weight: bold;
     color: #000000;
-    margin-bottom: 10px;
 }
 
 .title {
     height: 40px;
     margin-top: 50px;
     display: flex;
-    align-items: center;
 }
 
 .title span {
@@ -117,8 +115,9 @@ h1 {
 
 ion-icon {
     color: #EC362D;
-    font-size: 31px;
+    font-size: 25px;
     cursor: pointer;
+    line-height: 25px;
 }
 
 
@@ -507,7 +506,7 @@ input {
     .result {
         margin-top: 24px;
         padding: 18px;
-        width: 100%;
+        width: 100vw;
         height: auto;
     }
 
@@ -527,7 +526,8 @@ input {
 
     .result img {
         max-height: 240px;
-        width: 100%;
+        width: 94vw;
+
     }
 
     .result p {
