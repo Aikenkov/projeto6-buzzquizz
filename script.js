@@ -1,12 +1,12 @@
 //inicio Mateus
-const url = "https://mock-api.driven.com.br/api/v7/buzzquizz/quizzes";
+const url = "https://mock-api.driven.com.br/api/v6/buzzquizz/quizzes";
 let quizzes;
 let selfIds = [];
 let selfIdsJson;
 let intervalRenderQuizz;
 let content = document.querySelector(".content");
 
-let object;
+let object;   
 
 let points = 0;
 let plays = 0;
@@ -29,10 +29,13 @@ let imgIncorrectValue = [];
 //              Tela inicial para renderizar os quizzes              //
 ///////////////////////////////////////////////////////////////////////
 
-function renderQuizzesTela1(array) {
+function renderQuizzesTela1(array){
+    const ids = localStorage.getItem("ids");
+    const listIds = JSON.parse(ids);
     content.innerHTML = "";
-    quizzes = array.data;
-    if (selfIds.length === 0) {
+    quizzes = array.data; 
+    if(listIds.length === 0){ 
+        
         content.innerHTML += `
         <div class="my-quizzes-null">
             <span>
@@ -42,25 +45,25 @@ function renderQuizzesTela1(array) {
             <button onclick="createQuizz()">Criar Quizz</button>
         </div>    
         `
-
-        content.innerHTML += `
+        
+        content.innerHTML+= `
         <h1>Todos os Quizzes</h1>
         <div class="all-quizzes">
         </div>
         `;
 
-        let allQuizzes = document.querySelector(".all-quizzes");
-        for (let i = 0; i < quizzes.length; i++) {
-            allQuizzes.innerHTML += `
+        let allQuizzes = document.querySelector(".all-quizzes");                
+        for(let i = 0; i < quizzes.length; i++){
+            allQuizzes.innerHTML+= `
             <div class="quizz" id="${quizzes[i].id}" onclick="goToQuizz(this)">  
                 <img src="${quizzes[i].image}">
                 <span>${quizzes[i].title}</span>
             </div>         
             `;
         }
-
-    } else {
-        content.innerHTML += ` 
+    }else{
+        content.innerHTML+= 
+        ` 
         <div class="title">
             <span>
             <h1>Seus Quizzes</h1>
@@ -68,66 +71,65 @@ function renderQuizzesTela1(array) {
             <ion-icon name="add-circle" onclick="createQuizz()"></ion-icon>
         </div>    
         `
-            ;
-        content.innerHTML += `
+        ;
+        content.innerHTML+=`
         <div class="createdQuizzes">
         </div>
         `
-        content.innerHTML += `
+        content.innerHTML+=`
         <h1>Todos os Quizzes</h1>
         `
-        content.innerHTML += `
+        content.innerHTML+=`
         <div class="all-quizzes">
         </div>  
         `
-
         let myQuizzes1 = document.querySelector(".createdQuizzes");
         let allQuizzes = document.querySelector(".all-quizzes");
-        let flag = 0;
-        for (let i = 0; i < quizzes.length; i++) {
-            flag = 0;
-            for (let j = 0; j < selfIds.length; j++) {
-                if (quizzes[i].id === selfIds[j]) {
-                    myQuizzes.innerHTML += `
-                        <div class="quizz" id="${quizzes[j].id} onclick="goToQuizz(this)">  
-                            <img src="${quizzes[j].image}">
-                            <span>${quizzes[j].title}</span>
-                        </div>         
-                    `;
-                    flag = 1;
-                }
-            }
-            if (flag === 0) {
-                allQuizzes.innerHTML += `
-                    <div class="quizz" id="${quizzes[i].id} onclick="goToQuizz(this)">  
-                        <img src="${quizzes[i].image}">
-                        <span>${quizzes[i].title}</span>
-                    </div>         
-                `;
-            } else {
-                allQuizzes.innerHTML += `
+
+  
+        for(let i = 0; i < quizzes.length; i++){
+            for(let j = 0; j < listIds.length; j++){
+                if(listIds[j] === quizzes[i].id){
+                    myQuizzes1.innerHTML+=`
                     <div class="quizz" id="${quizzes[i].id}" onclick="goToQuizz(this)">  
                         <img src="${quizzes[i].image}">
                         <span>${quizzes[i].title}</span>
                     </div>         
-                    `;
+                `;
+                }
             }
         }
+        let temp = 0;
+        for(let i = 0; i < quizzes.length; i++){
+            temp = 0;
+            for(let j = 0; j < listIds.length; j++){
+                if(listIds[j] !== quizzes[i].id){
+                    temp++;
+                }
+                if(listIds[j] !== quizzes[i].id && temp === listIds.length){
+                    allQuizzes.innerHTML+= `
+                        <div class="quizz" id="${quizzes[i].id}" onclick="goToQuizz(this)">  
+                            <img src="${quizzes[i].image}">
+                            <span>${quizzes[i].title}</span>
+                        </div>         
+                `;
+                }
+            }
+            
+        } 
     }
     window.scrollTo(0, 0);
 }
 
 
-
-
-function findQuizzes() {
-    const promise = axios.get(url);
-    promise.then(renderQuizzesTela1);
-    promise.catch(tratarErro);
+function findQuizzes(){
+   const promise = axios.get(url);
+   promise.then(renderQuizzesTela1);
+   promise.catch(tratarErro);
 }
 
-function tratarErro(erro) {
-    if (erro.response.status === 404) {
+function tratarErro(erro){
+    if(erro.response.status === 404){
         findQuizzes();
     }
 }
@@ -141,43 +143,52 @@ function tratarErro(erro) {
 //              Inicio lógica para criar um novo quizz               //
 ///////////////////////////////////////////////////////////////////////
 function openLevels(elemento) {
-    elemento.parentNode.parentNode.classList.toggle("fechada")
-    elemento.classList.add("hidden");
+    const lv = document.querySelectorAll(".levels-box");
+    for(let i = 0; i < lv.length;i++){
+        if(!(lv[i].classList.contains("fechada"))){
+            lv[i].classList.add("fechada");
+        }
+    }
+    elemento.parentNode.parentNode.classList.remove("fechada");
 }
-
+function openQuestion(elemento) {
+    const lv = document.querySelectorAll(".question-box");
+    for(let i = 0; i < lv.length;i++){
+        if(!(lv[i].classList.contains("fechada"))){
+            lv[i].classList.add("fechada");
+        }
+    }
+    elemento.parentNode.parentNode.classList.remove("fechada");
+}
 function checkUrl(string) {
     try {
         let url = new URL(string)
         return true;
-    } catch (err) {
+    }catch(err) {
         return false;
-    }
-}
+   }
+ }
 
-function isHexColor(hex) {
+ function isHexColor(hex) {
     return colortest.test(hex);
 }
 
-function createQuizz() {
+function createQuizz(){
     content.innerHTML = ''
     content.innerHTML += `
         <div class="form"
             <h2>Comece pelo começo</h2>
-
             <div class="input-area">
                 <input type="text" placeholder="Título do seu quizz" />
-
                 <input type="text" placeholder="URL da imagem do seu quizz" />
-
                 <input type="text" placeholder="Quantidade de perguntas do quizz" />
-
                 <input type="text" placeholder="Quantidade de níveis do quizz" />
             </div>
             <div class="redButton1" onclick="createQuizzValidation()">
                 <p>Prosseguir pra criar perguntas</p>
             </div>
         </div>          
-    `
+    ` 
 }
 
 function createQuizzValidation() {
@@ -186,15 +197,15 @@ function createQuizzValidation() {
     qntQuestions = document.querySelector('input:nth-child(3)').value
     qntLevels = document.querySelector('input:nth-child(4)').value
     if (
-        title.length < 20 ||
-        title.length > 65 ||
-        !checkUrl(img) ||
-        qntQuestions < 3 ||
-        qntLevels < 2
+      title.length < 20 ||
+      title.length > 65 ||
+      !checkUrl(img) ||
+      qntQuestions < 3 ||
+      qntLevels < 2
     ) {
-        alert('preencher os dados corretamente.')
+      alert('preencher os dados corretamente.')
     } else {
-        createQuestions()
+      createQuestions()
     }
 }
 
@@ -202,10 +213,10 @@ function createQuestions() {
     content.innerHTML = "";
     content.innerHTML += '<h2>Crie suas perguntas</h2>';
     for (let i = 0; i < qntQuestions; i++) {
-        content.innerHTML +=
-            `
+        content.innerHTML += 
+        `
             <div class="question-box fechada">
-                <h3>Pergunta ${i + 1}<ion-icon name="create-outline" onclick="openLevels(this)"></ion-icon></h3>
+                <h3>Pergunta ${i+1}<ion-icon name="create-outline" onclick="openQuestion(this)"></ion-icon></h3>
                 <textarea name="question" class="question${i}" placeholder="Texto da pergunta"></textarea>
                 <textarea name="question-color" class="question-color${i}" placeholder="Cor de fundo da pergunta"></textarea>
   
@@ -214,86 +225,86 @@ function createQuestions() {
                 <textarea name="answer-img" class="answerTrue-img${i}" placeholder="URL da imagem"></textarea>
   
                 <h3>Respostas incorretas</h3>
-                <textarea name="incorrect-answer" class="incorrect-answer${i + 1}" placeholder="Resposta incorreta 1"></textarea>
-                <textarea name="answer-img" class="answerFalse-img${i + 1}" placeholder="URL da imagem 1"></textarea>
+                <textarea name="incorrect-answer" class="incorrect-answer${i+1}" placeholder="Resposta incorreta 1"></textarea>
+                <textarea name="answer-img" class="answerFalse-img${i+1}" placeholder="URL da imagem 1"></textarea>
   
-                <textarea name="incorrect-answer" class="incorrect-answer${i + 1}" placeholder="Resposta incorreta 2"></textarea>
-                <textarea name="answer-img" class="answerFalse-img${i + 1}" placeholder="URL da imagem 2"></textarea>
+                <textarea name="incorrect-answer" class="incorrect-answer${i+1}" placeholder="Resposta incorreta 2"></textarea>
+                <textarea name="answer-img" class="answerFalse-img${i+1}" placeholder="URL da imagem 2"></textarea>
   
-                <textarea name="incorrect-answer}" class="incorrect-answer${i + 1}" placeholder="Resposta incorreta 3"></textarea>
-                <textarea name="answer-img" class="answerFalse-img${i + 1}" placeholder="URL da imagem 3"></textarea>
+                <textarea name="incorrect-answer}" class="incorrect-answer${i+1}" placeholder="Resposta incorreta 3"></textarea>
+                <textarea name="answer-img" class="answerFalse-img${i+1}" placeholder="URL da imagem 3"></textarea>
             </div>
         `
     };
 
-    content.innerHTML += `
+    content.innerHTML +=  `
               <div class="redButton1" onclick="verifyFinishQuestions()">
                   <p>Prosseguir pra criar níveis</p>
               </div>
                 `
-}
+}   
 
 
 
-function verifyFinishQuestions() {
-    for (let i = 0; i < qntQuestions; i++) {
-        if (document.querySelector(`.question${i}`).value.length < 20) {
-            alert(`Prencha os dados corretamente da questão${i + 1}`);
+function verifyFinishQuestions(){
+    for(let i = 0; i < qntQuestions; i++){
+        if(document.querySelector(`.question${i}`).value.length < 20){
+            alert(`Prencha os dados corretamente da questão${i+1}`);
             return;
         }
-        if (isHexColor(document.querySelector(`.question-color${i}`).value) === false) {
-            alert(`Prencha os dados corretamente da cor da questao${i + 1}`);
+        if(isHexColor(document.querySelector(`.question-color${i}`).value) === false){
+            alert(`Prencha os dados corretamente da cor da questao${i+1}`);
+            return; 
+        }
+        if(document.querySelector(`.correct-answer${i}`).value === ''){
+            alert(`Prencha os dados corretamente da resposta correta${i+1}`);
             return;
         }
-        if (document.querySelector(`.correct-answer${i}`).value === '') {
-            alert(`Prencha os dados corretamente da resposta correta${i + 1}`);
-            return;
-        }
-        if (checkUrl(document.querySelector(`.answerTrue-img${i}`).value) === false) {
-            alert(`Prencha os dados corretamente da imagem da resposta correta${i + 1}`);
+        if(checkUrl(document.querySelector(`.answerTrue-img${i}`).value) === false){
+            alert(`Prencha os dados corretamente da imagem da resposta correta${i+1}`);
             return;
         }
 
         /*Verificar respostas incorretas vazias*/
-        incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i + 1}`);
-        for (let k = 0; k < incorrectAnswer.length; k++) {
+        incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i+1}`);
+        for(let k = 0; k < incorrectAnswer.length; k++){
             incorrectAnswer[k] = incorrectAnswer[k].value;
         }
         incorrectValue = Array.from(incorrectAnswer);
         incorrectValue = incorrectValue.filter(function (i) {
             return i;
         });
-        if (incorrectValue.length === 0) {
-            alert(`Prencha os dados corretamente da resposta incorreta${i + 1}`);
+        if(incorrectValue.length === 0){
+            alert(`Prencha os dados corretamente da resposta incorreta${i+1}`);
             return;
         }
-
+        
         /*Verificar imagens das respostas incorretas*/
-        incorrectImg = document.querySelectorAll(`.answerFalse-img${i + 1}`);
-        for (let l = 0; l < incorrectImg.length; l++) {
+        incorrectImg = document.querySelectorAll(`.answerFalse-img${i+1}`);
+        for(let l = 0; l < incorrectImg.length; l++){
             incorrectImg[l] = incorrectImg[l].value;
         }
         imgIncorrectValue = Array.from(incorrectImg);
         imgIncorrectValue = imgIncorrectValue.filter(function (i) {
             return i;
         });
-        if (imgIncorrectValue.length === 0) {
-            alert(`Prencha os dados corretamente da imagem da resposta incorreta${i + 1}`);
+        if(imgIncorrectValue.length === 0){
+            alert(`Prencha os dados corretamente da imagem da resposta incorreta${i+1}`);
             return;
         }
         incorrectValue = incorrectAnswer;
         imgIncorrectValue = incorrectImg;
-        for (let m = 0; m < incorrectValue.length; m++) {
-            if (checkUrl(imgIncorrectValue[m].value) === false && imgIncorrectValue[m].value !== '') {
+        for(let m = 0; m < incorrectValue.length; m++){
+            if(checkUrl(imgIncorrectValue[m].value) === false && imgIncorrectValue[m].value !== ''){
                 alert(`Prencha corretamente as urls das respostas incorretas`);
                 return;
             }
-            if (incorrectValue[m].value === '' && imgIncorrectValue[m].value !== '') {
+            if(incorrectValue[m].value === '' && imgIncorrectValue[m].value !== ''){
                 alert(`Prencha os dados corretamente`);
                 return;
             }
         }
-
+        
     }
     createObject();
     createQuizzLevels();
@@ -301,7 +312,7 @@ function verifyFinishQuestions() {
 
 function createObject() {
     object = {
-        title: `${title}`,
+        title: `${title}`, 
         image: `${img}`,
         questions: [
             {
@@ -311,7 +322,7 @@ function createObject() {
                     {
                         text: "",
                         image: "",
-                        isCorrectAnswer: Boolean
+                        isCorrectAnswer: Boolean    
                     },
                 ]
             },
@@ -325,7 +336,7 @@ function createObject() {
             },
         ]
     };
-    for (let i = 0; i < qntQuestions; i++) {
+    for(let i = 0; i < qntQuestions; i++){
         object.questions[i] = {
             title: "",
             color: "",
@@ -333,7 +344,7 @@ function createObject() {
                 {
                     text: "",
                     image: "",
-                    isCorrectAnswer: Boolean
+                    isCorrectAnswer: Boolean    
                 },
             ]
         }
@@ -342,32 +353,31 @@ function createObject() {
         object.questions[i].answers[0].text = document.querySelector(`.correct-answer${i}`).value;
         object.questions[i].answers[0].image = document.querySelector(`.answerTrue-img${i}`).value;
         object.questions[i].answers[0].isCorrectAnswer = true;
-        incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i + 1}`);
-        for (let k = 0; k < incorrectAnswer.length; k++) {
-            incorrectValue[k] = incorrectAnswer[k].value;
-        }
-        incorrectImg = document.querySelectorAll(`.answerFalse-img${i + 1}`);
-        for (let l = 0; l < incorrectImg.length; l++) {
-            imgIncorrectValue[l] = incorrectImg[l].value;
-        }
-        for (let j = 1; j <= incorrectValue.length; j++) {
-            object.questions[i].answers[j] = {
-                text: "",
-                image: "",
-                isCorrectAnswer: Boolean
-            };
-            object.questions[i].answers[j].text = incorrectValue[j - 1].value;
-            object.questions[i].answers[j].image = imgIncorrectValue[j - 1].value;
-            object.questions[i].answers[j].isCorrectAnswer = false;
-        }
-    }
+
+        incorrectAnswer = document.querySelectorAll(`.incorrect-answer${i+1}`);
+  
+        incorrectImg = document.querySelectorAll(`.answerFalse-img${i+1}`);
+
+        for(let j = 1; j <= incorrectAnswer.length; j++){
+            if(incorrectAnswer[j-1].value !== ''){
+                object.questions[i].answers[j] = {
+                    text: "",
+                    image: "",
+                    isCorrectAnswer: Boolean    
+                };
+                object.questions[i].answers[j].text = incorrectAnswer[j-1].value;
+                object.questions[i].answers[j].image = incorrectImg[j-1].value;
+                object.questions[i].answers[j].isCorrectAnswer = false;
+            }
+        }    
+    }  
 }
 
-function createQuizzLevels() {
-    content.innerHTML = "";
-    content.innerHTML += `<h2>Agora, Decida os níveis</h2>`
-    for (let i = 1; i <= qntLevels; i++) {
-        content.innerHTML += `
+function createQuizzLevels(){
+    content.innerHTML= "";
+    content.innerHTML+= `<h2>Agora, Decida os níveis</h2>`
+    for(let i = 1; i <= qntLevels; i++){
+        content.innerHTML+=`
         <div class="levels-box fechada">
             <h3>Nível ${i} <ion-icon name="create-outline" onclick="openLevels(this)"></ion-icon></h3>
             <textarea name="titulo" class="titulo" placeholder="Título do nível"></textarea>
@@ -377,33 +387,34 @@ function createQuizzLevels() {
         </div>
         `
     }
-    content.innerHTML += ` 
-            <div class="redButton1" onclick="verifyFinishQuiz()">
+    content.innerHTML+=` 
+            <div class="redButton1" onclick="verifyFinishQuizz()">
                 <p>Finalizar Quizz</p>
             </div>
     `
 }
 
-function verifyFinishQuizz() {
-    let titulos = document.querySelectorAll("textarea.titulo").value;
-    let acertos = document.querySelectorAll("textarea.acerto").value;
-    let urls = document.querySelectorAll("textarea.url").value;
-    let descricoes = document.querySelectorAll("textarea.descricao").value;
+
+function verifyFinishQuizz(){
+    let titulos = document.querySelectorAll("textarea.titulo");
+    let acertos = document.querySelectorAll("textarea.acerto");
+    let urls = document.querySelectorAll("textarea.url");
+    let descricoes = document.querySelectorAll("textarea.descricao");
     let flag = 0;
-    for (let i = 0; i < qntLevels; i++) {
-        if (!(checkUrl(urls[i]))) {
-            alert("Preencha os dados corretamente!!!")
+    for(let i = 0; i < qntLevels; i++){
+        if(!(checkUrl(urls[i].value))){
+            alert("Preencha os dados da url corretamente!!!")
             return;
         }
-        if (acertos[i] !== 0) {
-            flag++
-            if (flag === qntLevels - 1) {
-                alert("Preencha os dados corretamente!!!")
-                return;
-            }
+        if(acertos[i].value == 0){ 
+            flag = 1;
         }
-        if (titulos[i].length < 10 || (acertos[i] < 0 && acertos[i] > 100) || descricoes[i].length < 30) {
-            alert("Preencha os dados corretamente!!!")
+        if(flag == 0 && i == qntLevels-1){
+            alert("Precisamos de um valor 0 de acertos em 1 nivel!!!")
+            return;    
+        }
+        if(titulos[i].value.length < 10 || (acertos[i].value < 0 && acertos[i].value > 100) || descricoes[i].value.length < 30){
+            alert("Preencha os dados da descrição/titulos corretamente!!!")
             return;
         }
         object.levels[i] = {
@@ -420,34 +431,43 @@ function verifyFinishQuizz() {
     finishQuizz();
 }
 
-function finishQuizz() {
+function finishQuizz(){
     content.innerHTML = "";
-    content.innerHTML += `            
+    content.innerHTML +=   `            
         <div class="" >
             <h3>Seu quizz está pronto!</h3>
-            <div class="quizz" onclick="goToQuizz(this)">  
+            <div class="quizz">  
                 <img src="${object.image}">
                 <span>${object.title}</span>
             </div>         
-            <div class="redButton1" onclick="verifyFinishQuiz()">
+            <div class="redButton1" onclick="findToOpenQuizz()">
                 <p>Acessar Quizz</p>
             </div>
-            <p class = "grey" onclick="createQuizz()">Voltar pra home</p> 
+            <div class = "redButton1 grey" onclick="findQuizzes()">Voltar pra home</div> 
         </div>
         `
     let promise = axios.post(url, object);
     promise.then(sendToApi);
 }
-
-function sendToApi(resposta) {
+let idTemp;
+function sendToApi(resposta){
+    idTemp = resposta.data.id;
+    const Pids = localStorage.getItem("ids")
+    const Jids = JSON.parse(Pids);
+    selfIds = Jids;
     selfIds.push(resposta.data.id);
     selfIdsJson = JSON.stringify(selfIds);
-
     localStorage.setItem("ids", selfIdsJson);
-
-
 }
 
+function findToOpenQuizz(){
+    let promise = axios.get(url, idTemp);
+    promise.then(openCreatedQuizz)
+}
+
+function openCreatedQuizz(resposta){
+    showQuizz(resposta.data[0]);
+}
 
 ////////////////////////////////////////////////////////////// 
 //      Finalizada parte para verificar niveis do quizz     //
@@ -457,7 +477,7 @@ function sendToApi(resposta) {
 //      Tela de resposta do quiz a partir desse ponto      //
 /////////////////////////////////////////////////////////////
 
-function goToQuizz(element) {
+function goToQuizz(element){
     getQuizz(element);
 }
 
@@ -540,39 +560,38 @@ function choose(element) {
         plays++;
         element.classList.add('chosen');
         pendind.classList.remove('pending')
+        setTimeout(scrollToNext, 2000);
         if (plays === myQuizzes.questions.length) {
             finalResult();
         }
-
-        setTimeout(scrollToNext, 2000);
     }
 
 }
 
 
+function scrollToNext() {
+    const nextQ = document.querySelector('.pending');
+    nextQ.scrollIntoView({ block: "start", behavior: "smooth" });
+}
+
 function finalResult() {
     let average = Math.ceil((points / plays) * 100);
 
     let temp = 0;
-    let temp2;
+    let temp2 = quizz.levels[0];
 
     for (let i = 0; i < quizz.levels.length; i++) {
 
         let minValue = quizz.levels[i].minValue;
-        if (average >= temp && average >= minValue) {
-
-            temp = minValue;
+        if(average >= temp && average >= minValue){
             temp2 = quizz.levels[i];
-
         }
-
         if (average >= temp && average >= minValue && minValue > temp) {
 
             temp = minValue;
             temp2 = quizz.levels[i];
+
         }
-
-
     }
 
     if (temp2 === undefined) {
@@ -582,7 +601,6 @@ function finalResult() {
             }
         }
     }
-    console.log(temp2)
     showResult(average, temp2)
 }
 
@@ -598,22 +616,12 @@ function showResult(average, resultlevel) {
                  <p>${resultlevel.text}</p>
         </div>
     </div>
-
     <div class="restart-buttom">
         <div onclick="restartQuizz()" class="restart-quizz">Reiniciar Quizz</div>
         <span class="go-home" onclick="goHome()">Voltar pra home</span>
     </div>
     `
 }
-
-
-function scrollToNext() {
-    if (document.querySelectorAll('.pending').length > 0) {
-        const nextQ = document.querySelector('.pending')
-        nextQ.scrollIntoView({ block: 'start', behavior: 'smooth' })
-    }
-}
-
 
 function restartQuizz() {
     plays = 0;
