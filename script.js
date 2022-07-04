@@ -34,7 +34,7 @@ function renderQuizzesTela1(array){
     const listIds = JSON.parse(ids);
     content.innerHTML = "";
     quizzes = array.data; 
-    if(listIds.length === 0 || listIds === null){ 
+    if(listIds === null){ 
         
         content.innerHTML += `
         <div class="my-quizzes-null">
