@@ -540,4 +540,53 @@ input {
         margin-top: 12px;
         word-break: break-word;
     }
+    .content{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .my-quizzes-null{
+        width: 80%;
+        
+    }
+
+    .my-quizzes {
+        width: 90%;
+    }
+    .all-quizzes{
+        width: 80%;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }    
+    .quizz {
+        margin-right: 10px;
+    }
+    .quizz span {
+        position: absolute;
+        left: 10px;
+        bottom: 10px;
+        color: white;
+        text-align: left;
+        line-break: auto;
+        font-size: 17px;
+    }
+    .createdQuizzes{
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .top{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin: 0 auto;
+    }
 }
