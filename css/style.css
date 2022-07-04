@@ -559,8 +559,9 @@ input {
     .all-quizzes{
         width: 80%;
         display: flex;
+        flex-direction: column;
         justify-content: center;
-        flex-wrap: wrap;
+        align-items: center;
     }    
     .quizz {
         margin-right: 10px;
