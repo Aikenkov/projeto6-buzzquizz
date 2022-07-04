@@ -343,6 +343,7 @@ input {
     font-size: 20px;
     margin-left: 0;
     margin-bottom: 20px;
+    word-break: break-word;
 }
 
 .answers img {
