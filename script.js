@@ -506,6 +506,7 @@ function getQuizz(element) {
 
 function showQuizz(array) {
     quizz = array
+    content.innerHTML = "";
     content.innerHTML = ` 
               <header class="header-quizz">
                   <div><span>${quizz.title}</span></div>
@@ -568,7 +569,7 @@ function choose(element) {
         element.classList.add('chosen');
         pendind.classList.remove('pending')
         setTimeout(scrollToNext, 2000);
-        if (plays === myQuizzes.questions.length) {
+        if (plays === quizz.questions.length) {
             finalResult();
         }
     }
@@ -633,7 +634,7 @@ function showResult(average, resultlevel) {
 function restartQuizz() {
     plays = 0;
     points = 0;
-    getQuizz(myQuizzes)
+    getQuizz(quizz)
     document.querySelector(".header-quizz").scrollIntoView({ block: "start", behavior: "smooth" });
 }
 
