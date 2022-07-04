@@ -449,15 +449,22 @@ function finishQuizz(){
     let promise = axios.post(url, object);
     promise.then(sendToApi);
 }
+
 let idTemp;
 function sendToApi(resposta){
     idTemp = resposta.data.id;
     const Pids = localStorage.getItem("ids")
     const Jids = JSON.parse(Pids);
-    selfIds = Jids;
-    selfIds.push(resposta.data.id);
-    selfIdsJson = JSON.stringify(selfIds);
-    localStorage.setItem("ids", selfIdsJson);
+    if(Jids === null){
+        selfIds.push(resposta.data.id);    
+        selfIdsJson = JSON.stringify(selfIds);
+        localStorage.setItem("ids", selfIdsJson);
+    }else{
+        selfIds = Jids;
+        selfIds.push(resposta.data.id);
+        selfIdsJson = JSON.stringify(selfIds);
+        localStorage.setItem("ids", selfIdsJson);
+    }
 }
 
 function findToOpenQuizz(){
